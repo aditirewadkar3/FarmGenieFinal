@@ -1,0 +1,808 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Font ────────────────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THEME TOKENS — Dark (default)
+══════════════════════════════════════════════════════════════════════════ */
+:root,
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-page: #F8FAF8;
+  --bg-page-2: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-solid: #FFFFFF;
+  --bg-card-hover: #EAF5EA;
+  --bg-input: #F8FAF8;
+  --bg-navbar: #6BAF6B;
+  --bg-panel: #FFFFFF;
+  --bg-header: #8FD694;
+
+  /* Borders */
+  --border-card: #EAF5EA;
+  --border-accent: #8FD694;
+  --border-input: #D3EBD3;
+
+  /* Text */
+  --text-primary: #2F3E2F;
+  --text-secondary: #467646;
+  --text-muted: #5A965A;
+  --text-accent: #385B38;
+  --text-link: #385B38;
+
+  /* Accent */
+  --accent-primary: #6BAF6B;
+  --accent-secondary: #8FD694;
+  --accent-emerald: #6BAF6B;
+  --accent-teal: #6BAF6B;
+  --accent-amber: #8FD694;
+  --accent-red: #5A965A;
+
+  /* Shadows */
+  --shadow-card: 0 4px 20px rgba(107, 175, 107, 0.12);
+  --shadow-accent: 0 4px 16px rgba(107, 175, 107, 0.25);
+  --shadow-navbar: 0 4px 20px rgba(107, 175, 107, 0.2);
+
+  /* Scrollbar */
+  --scrollbar-thumb: #8FD694;
+  --scrollbar-track: #EAF5EA;
+
+  /* ── shadcn/ui standard tokens ── */
+  --background: #F8FAF8;
+  --foreground: #2F3E2F;
+  --card: #FFFFFF;
+  --card-foreground: #2F3E2F;
+  --popover: #FFFFFF;
+  --popover-foreground: #2F3E2F;
+  --border: #EAF5EA;
+  --input: #F8FAF8;
+  --ring: #6BAF6B;
+  --muted-foreground: #5A965A;
+  --accent-foreground: #2F3E2F;
+
+  /* ── shadcn Sidebar tokens (force light) ── */
+  --sidebar-background: #F8FAF8;
+  --sidebar-foreground: #2F3E2F;
+  --sidebar-border: #EAF5EA;
+  --sidebar-accent: #EAF5EA;
+  --sidebar-accent-foreground: #2F3E2F;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THEME TOKENS — Light
+══════════════════════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-page: #F8FAF8;
+  --bg-page-2: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-solid: #FFFFFF;
+  --bg-card-hover: #EAF5EA;
+  --bg-input: #F8FAF8;
+  --bg-navbar: #6BAF6B;
+  --bg-panel: #FFFFFF;
+  --bg-header: #8FD694;
+
+  /* Borders */
+  --border-card: #EAF5EA;
+  --border-accent: #8FD694;
+  --border-input: #D3EBD3;
+
+  /* Text */
+  --text-primary: #2F3E2F;
+  --text-secondary: #467646;
+  --text-muted: #5A965A;
+  --text-accent: #385B38;
+  --text-link: #385B38;
+
+  /* Accent */
+  --accent-primary: #6BAF6B;
+  --accent-secondary: #8FD694;
+  --accent-emerald: #6BAF6B;
+  --accent-teal: #6BAF6B;
+  --accent-amber: #8FD694;
+  --accent-red: #5A965A;
+
+  /* Shadows */
+  --shadow-card: 0 4px 20px rgba(107, 175, 107, 0.12);
+  --shadow-accent: 0 4px 16px rgba(107, 175, 107, 0.25);
+  --shadow-navbar: 0 4px 20px rgba(107, 175, 107, 0.2);
+
+  /* Scrollbar */
+  --scrollbar-thumb: #8FD694;
+  --scrollbar-track: #EAF5EA;
+
+  /* ── shadcn/ui standard tokens ── */
+  --background: #F8FAF8;
+  --foreground: #2F3E2F;
+  --card: #FFFFFF;
+  --card-foreground: #2F3E2F;
+  --popover: #FFFFFF;
+  --popover-foreground: #2F3E2F;
+  --border: #EAF5EA;
+  --input: #F8FAF8;
+  --ring: #6BAF6B;
+  --muted-foreground: #5A965A;
+  --accent-foreground: #2F3E2F;
+
+  /* ── shadcn Sidebar tokens (force light) ── */
+  --sidebar-background: #F8FAF8;
+  --sidebar-foreground: #2F3E2F;
+  --sidebar-border: #EAF5EA;
+  --sidebar-accent: #EAF5EA;
+  --sidebar-accent-foreground: #2F3E2F;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GLOBAL BASE
+══════════════════════════════════════════════════════════════════════════ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  min-height: 100vh;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   REUSABLE THEME UTILITY CLASSES
+   (Use these in components instead of hardcoded Tailwind colors)
+══════════════════════════════════════════════════════════════════════════ */
+
+/* Page wrappers */
+.kk-page {
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: all 0.4s ease;
+}
+
+/* Cards / panels */
+.kk-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.kk-card:hover {
+  background: var(--bg-card-hover);
+}
+
+/* Solid card for dropdowns/modals */
+.kk-card-solid {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  color: var(--text-primary);
+}
+
+/* Accent card (indigo border) */
+.kk-card-accent {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-accent);
+  border-radius: 20px;
+  box-shadow: var(--shadow-accent);
+  transition: all 0.3s ease;
+}
+
+/* Glass card */
+.kk-glass {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+/* Inputs */
+.kk-input {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border-input);
+  color: var(--text-primary);
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.kk-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.kk-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Headings */
+.kk-h1 {
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+}
+
+.kk-h2 {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 3vw, 1.75rem);
+}
+
+.kk-h3 {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.kk-text {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.kk-muted {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.kk-accent {
+  color: var(--text-accent);
+}
+
+/* Buttons */
+.kk-btn-primary {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 24px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-accent);
+  transition: all 0.25s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.kk-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.45);
+}
+
+.kk-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.kk-btn-ghost {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  color: var(--text-secondary);
+  border-radius: 14px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.kk-btn-ghost:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+/* Tables */
+.kk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.kk-table th {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.kk-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border-card);
+  vertical-align: middle;
+}
+
+.kk-table tr:hover td {
+  background: var(--bg-card-hover);
+}
+
+/* Dividers */
+.kk-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+  border: none;
+  margin: 0;
+}
+
+/* Badges */
+.kk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--border-card);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+}
+
+.kk-badge-accent {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: var(--text-accent);
+}
+
+.kk-badge-success {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.kk-badge-warn {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.kk-badge-danger {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* Light-mode overrides for dark-native styles */
+[data-theme="light"] .kk-badge-success {
+  color: #059669;
+}
+
+[data-theme="light"] .kk-badge-warn {
+  color: #d97706;
+}
+
+[data-theme="light"] .kk-badge-danger {
+  color: #dc2626;
+}
+
+[data-theme="light"] .kk-badge-accent {
+  color: #4f46e5;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES for pages that use inline dark styles
+══════════════════════════════════════════════════════════════════════════ */
+
+/* Market page */
+[data-theme="light"] .market-page-root {
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%) !important;
+}
+
+[data-theme="light"] .market-header-panel {
+  background: linear-gradient(135deg, #4338ca, #7c3aed) !important;
+}
+
+[data-theme="light"] .market-search-panel {
+  background: #fff !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .market-price-card {
+  background: #fff !important;
+  border-color: #e2e8f0 !important;
+  color: #1e1b4b !important;
+}
+
+/* Home hero section */
+[data-theme="light"] .home-hero {
+  background: linear-gradient(160deg, #f0f4ff 0%, #e8eeff 100%) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════════════════════════════════ */
+@keyframes kk-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kk-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kk-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes kk-pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes kk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes kk-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.kk-fade-up {
+  animation: kk-fade-up 0.5s ease both;
+}
+
+.kk-fade-in {
+  animation: kk-fade-in 0.4s ease both;
+}
+
+.kk-slide-in {
+  animation: kk-slide-in-right 0.4s ease both;
+}
+
+/* ── Skeleton shimmer ──────────────────────────────────────────────────── */
+.kk-skeleton {
+  background: linear-gradient(90deg,
+      var(--bg-card) 25%,
+      var(--bg-card-hover) 50%,
+      var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: kk-shimmer 1.6s ease infinite;
+  border-radius: 12px;
+}
+
+/* ── Spinner ───────────────────────────────────────────────────────────── */
+.kk-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-accent);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: kk-spin 0.75s linear infinite;
+}
+
+/* ── Theme toggle button ───────────────────────────────────────────────── */
+.kk-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+.kk-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.04);
+}
+
+/* The toggle pill track */
+.kk-toggle-track {
+  width: 32px;
+  height: 18px;
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+
+.kk-toggle-track.dark-on {
+  background: #6366f1;
+}
+
+.kk-toggle-track.light-on {
+  background: #fbbf24;
+}
+
+.kk-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.3s ease;
+}
+
+.dark-on .kk-toggle-thumb {
+  left: 17px;
+}
+
+.light-on .kk-toggle-thumb {
+  left: 3px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GLOBAL TRANSITION for smooth theme switching
+══════════════════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  transition-property: background-color, background, border-color, color, box-shadow;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
+}
+
+/* Exclude animations/transforms from the blanket transition */
+img,
+video,
+svg,
+canvas,
+[class*="animate-"],
+[class*="spin"] {
+  transition: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HOME PAGE — Light Mode Overrides
+   The Home page is built with hardcoded dark styles (bg-[#0a0f1e])
+══════════════════════════════════════════════════════════════════════════ */
+[data-theme="light"] .home-root,
+[data-theme="dark"] .home-root,
+[data-theme="light"] [class*="min-h-screen"][class*="bg-\\[\\#0a0f1e\\]"],
+[data-theme="dark"] [class*="min-h-screen"][class*="bg-\\[\\#0a0f1e\\]"],
+[data-theme="light"] [class*="min-h-screen"][class*="overflow-x-hidden"],
+[data-theme="dark"] [class*="min-h-screen"][class*="overflow-x-hidden"] {
+  background-color: #F8FAF8 !important;
+}
+
+/* Home page — all sections with dark bg */
+[data-theme="light"] .home-hero-section,
+[data-theme="dark"] .home-hero-section,
+[data-theme="light"] [class*="absolute"][class*="inset-0"][class*="bg-gradient-to-b"],
+[data-theme="dark"] [class*="absolute"][class*="inset-0"][class*="bg-gradient-to-b"] {
+  background: linear-gradient(160deg, #F8FAF8 0%, #EAF5EA 100%) !important;
+}
+
+/* Home hero text */
+[data-theme="light"] h1.text-white,
+[data-theme="dark"] h1.text-white,
+[data-theme="light"] h2.text-white,
+[data-theme="dark"] h2.text-white,
+[data-theme="light"] h3.text-white,
+[data-theme="dark"] h3.text-white,
+[data-theme="light"] p.text-white,
+[data-theme="dark"] p.text-white {
+  color: #2F3E2F !important;
+}
+
+[data-theme="light"] .text-gray-300,
+[data-theme="dark"] .text-gray-300 {
+  color: #467646 !important;
+}
+
+[data-theme="light"] .text-gray-400,
+[data-theme="dark"] .text-gray-400 {
+  color: #5A965A !important;
+}
+
+[data-theme="light"] .text-gray-600,
+[data-theme="dark"] .text-gray-600 {
+  color: #385B38 !important;
+}
+
+/* glass utility used in Home */
+[data-theme="light"] .glass,
+[data-theme="dark"] .glass {
+  background: rgba(107, 175, 107, 0.07) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(107, 175, 107, 0.2) !important;
+}
+
+/* Home stats section background */
+[data-theme="light"] section [class*="bg-gradient-to-b"][class*="from-\\[\\#0a0f1e\\]"],
+[data-theme="dark"] section [class*="bg-gradient-to-b"][class*="from-\\[\\#0a0f1e\\]"],
+[data-theme="light"] section [class*="bg-\\[\\#060a14\\]"],
+[data-theme="dark"] section [class*="bg-\\[\\#060a14\\]"],
+[data-theme="light"] section [class*="bg-\\[\\#0a0f1e\\]"],
+[data-theme="dark"] section [class*="bg-\\[\\#0a0f1e\\]"] {
+  background: transparent !important;
+}
+
+/* Footer */
+[data-theme="light"] footer.border-t,
+[data-theme="dark"] footer.border-t {
+  border-color: rgba(107, 175, 107, 0.2) !important;
+}
+
+[data-theme="light"] footer p,
+[data-theme="dark"] footer p {
+  color: #385B38 !important;
+}
+
+/* Floating badges in hero */
+[data-theme="light"] .absolute.bg-white\/95,
+[data-theme="dark"] .absolute.bg-white\/95 {
+  background: #fff !important;
+  color: #2F3E2F !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CHATBOT WINDOW — Custom Green Match
+══════════════════════════════════════════════════════════════════════════ */
+.kk-window,
+[data-theme="dark"] .kk-window,
+[data-theme="light"] .kk-window {
+  background: linear-gradient(160deg, #F8FAF8 0%, #EAF5EA 100%) !important;
+  color: #2F3E2F !important;
+}
+
+.kk-window .border-t.bg-white,
+[data-theme="dark"] .kk-window .border-t.bg-white {
+  background: #ffffff !important;
+  border-color: #D3EBD3 !important;
+}
+
+.kk-window textarea,
+[data-theme="dark"] .kk-window textarea {
+  background: #F8FAF8 !important;
+  color: #2F3E2F !important;
+  border-color: #D3EBD3 !important;
+}
+
+.kk-window textarea::placeholder,
+[data-theme="dark"] .kk-window textarea::placeholder {
+  color: #5A965A !important;
+}
+
+.kk-window .bg-white.border.border-violet-100,
+[data-theme="dark"] .kk-window .bg-white.border.border-violet-100 {
+  background: #ffffff !important;
+  color: #2F3E2F !important;
+  border-color: #D3EBD3 !important;
+}
+
+.kk-window .bg-violet-50,
+[data-theme="dark"] .kk-window .bg-violet-50,
+.kk-window .bg-amber-50,
+[data-theme="dark"] .kk-window .bg-amber-50 {
+  background: #EAF5EA !important;
+}
+
+.kk-window button.bg-white,
+[data-theme="dark"] .kk-window button.bg-white {
+  background: #ffffff !important;
+  color: #467646 !important;
+}
+
+.kk-window .bg-white.border-violet-100,
+[data-theme="dark"] .kk-window .bg-white.border-violet-100 {
+  background: #ffffff !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GLOBAL TEXT COLOR SAFETY OVERRIDES
+   Forces all hardcoded white/gray text to be readable on the new light Green backgrounds.
+══════════════════════════════════════════════════════════════════════════ */
+.text-white,
+.text-gray-50,
+.text-gray-100,
+.text-gray-200,
+.text-gray-300,
+.text-gray-400,
+.text-slate-50,
+.text-slate-100,
+.text-slate-200,
+.text-slate-300,
+.text-slate-400 {
+  color: #2F3E2F !important;
+}
+
+/* Protect text colors inside primary buttons or elements that still have solid background colors */
+.bg-emerald-500 .text-white,
+.bg-teal-600 .text-white,
+.bg-blue-600 .text-white,
+.kk-btn-primary,
+.kk-btn-primary .text-white,
+button[class*="bg-emerald"] .text-white,
+button[class*="bg-teal"] .text-white,
+[class*="bg-gradient"]>.text-white {
+  color: #FFFFFF !important;
+}

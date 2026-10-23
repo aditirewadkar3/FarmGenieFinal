@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "KrishiBandhu",
+    "slug": "krishibandhu",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "KrishiBandhu needs camera access for crop disease detection.",
+        "NSPhotoLibraryUsageDescription": "KrishiBandhu needs photo library access for uploading crop images.",
+        "NSLocationWhenInUseUsageDescription": "KrishiBandhu uses your location to show local market prices and nearby equipment."
+      }
+    },
+    "android": {
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {},
+    "plugins": [
+      "expo-secure-store",
+      "expo-location",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow KrishiBandhu to access your camera for crop disease detection."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow KrishiBandhu to access your photos for crop image uploads."
+        }
+      ],
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}
