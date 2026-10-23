@@ -1,19 +1,91 @@
-# Environments
-.env
-
-# Virtual Environment
+# ============================================================
+# Python & Virtual Environments (all packages & binaries)
+# ============================================================
 .venv/
 venv/
 env/
+ENV/
+env.bak/
+venv.bak/
+.Python
 
-# Python Cache
+# Python bytecode & cache
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+*.so
 
-# Models and Training outputs
-runs/
+# Python distribution, build artifacts & packages
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+*.egg
+*.whl
+pip-wheel-metadata/
+share/python-wheels/
+__pypackages__/
+
+# Pip installer logs & metadata
+pip-log.txt
+pip-delete-this-directory.txt
+.installed.cfg
+MANIFEST
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# ============================================================
+# Large ML Model Weights & Checkpoints (Hugging Face / Keras / PyTorch / YOLO)
+# Downloadable via python download_models.py
+# ============================================================
+*.pth
 *.pt
+*.safetensors
+*.keras
+*.h5
+*.bin
+*.onnx
+*.tflite
+*.pkl
+*.pb
+*.tar.gz
 
-# Jupyter
+# Pretrained weight directories (keep config & class JSONs, ignore weight blobs)
+pretrained_models/beans/*.safetensors
+pretrained_models/cotton/*.pth
+pretrained_models/potato/*.keras
+pretrained_models/rice/*.safetensors
+pretrained_models/tomato/*.safetensors
+
+# Training runs & outputs
+runs/
+wandb/
+lightning_logs/
+
+# ============================================================
+# Jupyter Notebooks Cache
+# ============================================================
 .ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# ============================================================
+# IDE, Logs & System Files
+# ============================================================
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+*.tmp

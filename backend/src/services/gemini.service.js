@@ -39,11 +39,11 @@ const createGeminiClient = () => {
  * return a response shaped like an OpenAI chat completion so the rest of
  * the code can consume it unchanged.
  */
+const GEMINI_MODELS = ["gemini-2.5-flash", "gemini-3.8-flash"];
+
 const callGemini = async (params) => {
   const geminiClient = createGeminiClient();
   if (!geminiClient) throw new Error("Gemini API key not configured.");
-
-  const model = geminiClient.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   // Merge system prompt + user messages into a single prompt string
   const systemMsg = params.messages.find((m) => m.role === "system");
@@ -53,16 +53,25 @@ const callGemini = async (params) => {
     ...userMsgs.map((m) => m.content),
   ].join("");
 
-  const result = await model.generateContent(fullPrompt);
-  const text = result.response.text();
+  let lastErr = null;
+  for (const modelName of GEMINI_MODELS) {
+    try {
+      const model = geminiClient.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(fullPrompt);
+      const text = result.response.text();
+      return { choices: [{ message: { content: text } }] };
+    } catch (err) {
+      lastErr = err;
+      console.warn(`[Gemini] Model ${modelName} failed (${err.message}). Trying fallback model...`);
+    }
+  }
 
-  // Shape the response to match OpenAI format
-  return { choices: [{ message: { content: text } }] };
+  throw lastErr || new Error("All Gemini models failed.");
 };
 
-// Primary Groq models — 70b for quality, 8b when 70b rate-limits
-const PRIMARY_MODEL = "llama-3.3-70b-versatile";
-const FALLBACK_MODEL = "llama-3.1-8b-instant";
+// Groq models with auto-fallback to Gemini
+const PRIMARY_MODEL = "openai/gpt-oss-120b";
+const FALLBACK_MODEL = "openai/gpt-oss-20b";
 
 /**
  * Calls Groq (PRIMARY → FALLBACK_MODEL on 429).
