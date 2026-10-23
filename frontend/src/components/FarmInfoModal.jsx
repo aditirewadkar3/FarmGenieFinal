@@ -29,15 +29,13 @@ const FarmInfoModal = () => {
     const [seedImages, setSeedImages] = useState({});
 
     useEffect(() => {
-        if (user && user.role === 'farmer') {
-            const hasInfo = user.farmInfo && user.farmInfo.totalArea && user.farmInfo.totalArea.value;
-            const isDismissed = sessionStorage.getItem('farm_info_modal_dismissed');
-            
-            if (!hasInfo && !isDismissed) {
-                // Short delay to avoid popping up too fast
-                const timer = setTimeout(() => setIsOpen(true), 1500);
-                return () => clearTimeout(timer);
-            }
+        const hasInfo = user && user.farmInfo && user.farmInfo.totalArea && user.farmInfo.totalArea.value;
+        const isDismissed = sessionStorage.getItem('farm_info_modal_dismissed');
+
+        if (user && !hasInfo && !isDismissed) {
+            // Short delay to avoid popping up too fast
+            const timer = setTimeout(() => setIsOpen(true), 1500);
+            return () => clearTimeout(timer);
         }
     }, [user]);
 

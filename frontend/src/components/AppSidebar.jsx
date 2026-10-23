@@ -17,7 +17,7 @@ import { ScrollArea } from './ui/scroll-area';
 import ProfileDropdown from './ProfileDropdown';
 import { cn } from '../lib/utils';
 
-// ── Nav config per role ────────────────────────────────────────────────────
+// ── Nav config ────────────────────────────────────────────────────────────
 const NAV_CONFIG = {
     farmer: [
         { path: '/farmer', label: 'Dashboard', icon: Home },
@@ -26,37 +26,9 @@ const NAV_CONFIG = {
         { path: '/farmer/weather', label: 'Weather Updates', icon: CloudSun },
         { path: '/farmer/schemes', label: 'Govt Schemes', icon: ClipboardList },
     ],
-    admin: [
-        { path: '/admin', label: 'Dashboard', icon: Home },
-        { path: '/admin/farmers', label: 'Farmers', icon: Users },
-        { path: '/admin/agronomists', label: 'Agronomists', icon: Microscope },
-        { path: '/admin/facilities', label: 'Facilities', icon: Settings },
-        { path: '/admin/seeds', label: 'Seeds', icon: Sprout },
-        { path: '/admin/fertilizers', label: 'Fertilizers', icon: ClipboardList },
-        { path: '/messages', label: 'Messages', icon: MessageSquare },
-    ],
-    agronomist: [
-        { path: '/agronomist', label: 'Dashboard', icon: Home },
-        { path: '/agronomist/profile', label: 'Profile Settings', icon: UserCircle },
-        { path: '/messages', label: 'Messages', icon: MessageSquare },
-    ],
-    retailer: [
-        { path: '/retailer', label: 'Dashboard', icon: Home },
-        { path: '/retailer/marketplace', label: 'Marketplace', icon: Store },
-        { path: '/retailer/connected-farmers', label: 'Connected Farmers', icon: Users },
-        { path: '/retailer/weather', label: 'Weather Updates', icon: CloudSun },
-        { path: '/retailer/market', label: 'Market Trends', icon: BarChart3 },
-        { path: '/retailer/supply-chain', label: 'Supply Chain', icon: Truck },
-        { path: '/messages', label: 'Messages', icon: MessageSquare },
-    ],
 };
 
-const ROLE_COLORS = {
-    farmer: { bg: 'bg-emerald-600', ring: 'ring-emerald-400', label: 'Farmer', icon: '👨‍🌾' },
-    admin: { bg: 'bg-indigo-600', ring: 'ring-indigo-400', label: 'Admin', icon: '🛡️' },
-    agronomist: { bg: 'bg-teal-600', ring: 'ring-teal-400', label: 'Expert', icon: '🔬' },
-    retailer: { bg: 'bg-blue-600', ring: 'ring-blue-400', label: 'Retailer', icon: '🏪' },
-};
+const FARMER_ROLE_COLOR = { bg: 'bg-emerald-600', ring: 'ring-emerald-400', label: 'Farmer', icon: '🌾' };
 
 // ── Sidebar Nav Item ───────────────────────────────────────────────────────
 const NavItem = ({ link, active, collapsed, t, onClick }) => {
@@ -161,7 +133,7 @@ const LanguageSwitcher = ({ collapsed }) => {
     );
 };
 
-// ── Recommended Scheme (Farmer Only) ──────────────────────────────────────
+// ── Recommended Scheme ─────────────────────────────────────────────────────
 const SCHEME_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 const RecommendedScheme = ({ onClose }) => {
@@ -219,12 +191,12 @@ const AppSidebar = () => {
     const { t } = useLanguage();
     const { collapsed, toggle, mobileOpen, setMobileOpen } = useSidebar();
 
-    const navLinks = user ? (NAV_CONFIG[user.role] || []) : [];
-    const rc = user ? (ROLE_COLORS[user.role] || ROLE_COLORS.farmer) : ROLE_COLORS.farmer;
+    const navLinks = user ? NAV_CONFIG.farmer : [];
+    const rc = FARMER_ROLE_COLOR;
 
     const isActive = (path) =>
         location.pathname === path ||
-        (path !== '/' && path !== '/farmer' && path !== '/admin' && path !== '/agronomist' && location.pathname.startsWith(path));
+        (path !== '/' && path !== '/farmer' && location.pathname.startsWith(path));
 
     const handleLogout = async () => {
         setMobileOpen(false);
@@ -278,8 +250,8 @@ const AppSidebar = () => {
                     ))}
                 </div>
 
-                {/* Recommended scheme for Farmers */}
-                {user?.role === 'farmer' && !collapsed && (
+                {/* Recommended scheme */}
+                {!collapsed && (
                     <div className="mt-4">
                         <div className="px-3 mb-2">
                             <div className="rounded-lg bg-gradient-to-br from-emerald-600 to-teal-700 p-3 text-black">
@@ -315,10 +287,10 @@ const AppSidebar = () => {
                             <Tooltip delayDuration={100}>
                                 <TooltipTrigger asChild>
                                     <div className="flex items-center justify-center w-full">
-                                        <ProfileDropdown 
-                                            user={user} 
-                                            collapsed={collapsed} 
-                                            isMobile={isMobile} 
+                                        <ProfileDropdown
+                                            user={user}
+                                            collapsed={collapsed}
+                                            isMobile={isMobile}
                                             closeMobile={closeMobile}
                                             roleColor={rc}
                                         />
@@ -327,10 +299,10 @@ const AppSidebar = () => {
                                 <TooltipContent side="right">{user.fullName} · {rc.label}</TooltipContent>
                             </Tooltip>
                         ) : (
-                            <ProfileDropdown 
-                                user={user} 
-                                collapsed={collapsed} 
-                                isMobile={isMobile} 
+                            <ProfileDropdown
+                                user={user}
+                                collapsed={collapsed}
+                                isMobile={isMobile}
                                 closeMobile={closeMobile}
                                 roleColor={rc}
                             />

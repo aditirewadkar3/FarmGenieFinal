@@ -1,6 +1,6 @@
 import express from 'express';
 import { createEquipment, getNearbyEquipment, getMyEquipment, updateEquipment } from '../controllers/equipment.controller.js';
-import { protect, authorizeRoles } from '../middleware/auth.middleware.js';
+import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
@@ -10,15 +10,15 @@ router.use(protect);
 // Get nearby equipment (Available to all authenticated users)
 router.get('/nearby', getNearbyEquipment);
 
-// Manage my listings (Farmers only)
-router.get('/my-listings', authorizeRoles('farmer'), getMyEquipment);
+// Manage my listings
+router.get('/my-listings', getMyEquipment);
 
 router
     .route('/')
-    .post(authorizeRoles('farmer'), createEquipment);
+    .post(createEquipment);
 
 router
     .route('/:id')
-    .patch(authorizeRoles('farmer'), updateEquipment);
+    .patch(updateEquipment);
 
 export default router;

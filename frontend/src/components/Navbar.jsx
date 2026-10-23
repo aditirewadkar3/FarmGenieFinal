@@ -67,13 +67,7 @@ const Navbar = () => {
     return 'KrishiBandhu';
   };
 
-  const roleConfig = {
-    farmer: { ring: 'ring-emerald-400', bg: 'bg-emerald-500', label: 'Farmer' },
-    admin: { ring: 'ring-indigo-400', bg: 'bg-indigo-500', label: 'Admin' },
-    agronomist: { ring: 'ring-teal-400', bg: 'bg-teal-500', label: 'Expert' },
-  };
-
-  const rc = user ? (roleConfig[user.role] || roleConfig.farmer) : roleConfig.farmer;
+  const rc = { ring: 'ring-emerald-400', bg: 'bg-emerald-500', label: 'Farmer' };
 
   return (
     <>
@@ -197,7 +191,7 @@ const Navbar = () => {
 
                           <div className="space-y-1">
                             <Link
-                              to={user.role === 'admin' ? '/admin/profile' : user.role === 'agronomist' ? '/agronomist/profile' : '/farmer/profile'}
+                              to='/farmer/profile'
                               onClick={() => setIsProfileOpen(false)}
                               className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-card-hover text-secondary hover:text-primary transition-all text-sm font-semibold group"
                             >

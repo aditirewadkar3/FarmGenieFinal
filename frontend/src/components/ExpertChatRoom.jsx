@@ -176,11 +176,7 @@ const ExpertChatRoom = ({ otherUserId, category = 'expert', onClose }) => {
                         <div className="cursor-pointer">
                             <h3 className="font-extrabold text-lg leading-tight truncate max-w-[150px]">{otherUser.fullName}</h3>
                             <p className="text-[11px] text-[#25d366] font-medium leading-tight">
-                                {category === 'equipment'
-                                ? (user.role === 'farmer' ? t('Equipment Owner') : t('Farmer'))
-                                : category === 'retailer'
-                                    ? t('Retailer')
-                                    : (user.role === 'farmer' ? t('Expert Agronomist') : t('Farmer'))}
+                                {category === 'equipment' ? t('Equipment Owner') : category === 'retailer' ? t('Retailer') : t('Expert Agronomist')}
                             </p>
                         </div>
                     </div>

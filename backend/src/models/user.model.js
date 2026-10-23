@@ -19,11 +19,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role: {
-      type: String,
-      default: 'farmer',
-      enum: ['farmer', 'admin', 'agronomist', 'retailer'],
-    },
     profilePhoto: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Media',

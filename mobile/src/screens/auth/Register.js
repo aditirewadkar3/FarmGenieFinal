@@ -43,7 +43,6 @@ export default function Register({ navigation }) {
         name: form.name,
         mobileNumber: form.mobileNumber,
         password: form.password,
-        role: 'farmer',
       }, idProof);
       Alert.alert('Registration Successful!', 'Your account has been created. You can now login.', [
         { text: 'OK', onPress: () => navigation.navigate('Login') },

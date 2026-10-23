@@ -33,8 +33,7 @@ const Login = () => {
     setLoading(true);
     const result = await login(mobileNumber, password);
     if (result.success) {
-      const user = JSON.parse(localStorage.getItem('user'));
-      navigate(user.role === 'admin' ? '/admin' : user.role === 'farmer' ? '/farmer' : user.role === 'retailer' ? '/retailer' : '/agronomist');
+      navigate('/farmer');
     } else {
       setError(result.message);
     }

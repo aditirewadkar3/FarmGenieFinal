@@ -45,9 +45,7 @@ export const AuthProvider = ({ children }) => {
       // Set one-shot session flags — consumed after first dashboard render.
       // sessionStorage clears automatically when the tab/browser is closed.
       sessionStorage.setItem('showLanguageSelectOnce', 'true');
-      if (userData.role === 'farmer') {
-        sessionStorage.setItem('showLocationPromptOnce', 'true');
-      }
+      sessionStorage.setItem('showLocationPromptOnce', 'true');
 
       return { success: true };
     } catch (error) {
@@ -103,12 +101,3 @@ export const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-
-
-
-
-
-
-
-

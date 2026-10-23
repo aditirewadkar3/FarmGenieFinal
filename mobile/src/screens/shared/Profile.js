@@ -69,8 +69,7 @@ export default function Profile({ navigation }) {
   if (loading) return <SafeAreaView style={styles.loadWrap}><ActivityIndicator size="large" color={colors.primary} /></SafeAreaView>;
 
   const displayUser = profile || user;
-  const ROLE_COLORS = { farmer: colors.primary, retailer: '#FB8C00', agronomist: '#5C6BC0', admin: '#E53935' };
-  const roleColor = ROLE_COLORS[displayUser?.role] || colors.primary;
+  const roleColor = colors.primary;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -93,9 +92,7 @@ export default function Profile({ navigation }) {
             </View>
           </TouchableOpacity>
           <Text style={styles.heroName}>{displayUser?.name}</Text>
-          <View style={styles.roleBadge}>
-            <Text style={styles.roleText}>{displayUser?.role?.toUpperCase()}</Text>
-          </View>
+          
         </LinearGradient>
 
         {/* Info Cards */}

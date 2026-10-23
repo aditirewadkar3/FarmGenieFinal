@@ -9,9 +9,6 @@ import LoginScreen from '../screens/auth/Login';
 import RegisterScreen from '../screens/auth/Register';
 
 import FarmerNavigator from './FarmerNavigator';
-import RetailerNavigator from './RetailerNavigator';
-import AgronomistNavigator from './AgronomistNavigator';
-import AdminNavigator from './AdminNavigator';
 
 const Stack = createStackNavigator();
 
@@ -26,21 +23,11 @@ export default function RootNavigator() {
     );
   }
 
-  const getNavigatorForRole = (role) => {
-    switch (role) {
-      case 'farmer': return <Stack.Screen name="FarmerApp" component={FarmerNavigator} />;
-      case 'retailer': return <Stack.Screen name="RetailerApp" component={RetailerNavigator} />;
-      case 'agronomist': return <Stack.Screen name="AgronomistApp" component={AgronomistNavigator} />;
-      case 'admin': return <Stack.Screen name="AdminApp" component={AdminNavigator} />;
-      default: return null;
-    }
-  };
-
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
-          getNavigatorForRole(user.role)
+          <Stack.Screen name="FarmerApp" component={FarmerNavigator} />
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />

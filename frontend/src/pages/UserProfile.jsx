@@ -484,14 +484,12 @@ const UserProfile = () => {
             <User size={18} /> {t('Personal Details')}
           </button>
 
-          {user?.role === 'farmer' && (
-            <button
-              onClick={() => setActiveTab('farm')}
-              className={`tab-button ${activeTab === 'farm' ? 'active' : ''}`}
-            >
-              <Sprout size={18} /> {t('Farm Information')}
-            </button>
-          )}
+          <button
+            onClick={() => setActiveTab('farm')}
+            className={`tab-button ${activeTab === 'farm' ? 'active' : ''}`}
+          >
+            <Sprout size={18} /> {t('Farm Information')}
+          </button>
 
           <button
             onClick={() => setActiveTab('location')}
@@ -612,7 +610,7 @@ const UserProfile = () => {
             </div>
           )}
 
-          {activeTab === 'farm' && user?.role === 'farmer' && (
+          {activeTab === 'farm' && (
             <div className="kk-fade-in">
               <h2 className="text-xl font-black mb-6 flex items-center gap-3 text-emerald-600">
                 <Sprout size={24} /> {t('Farm Configuration')}

@@ -18,7 +18,7 @@ function ProfileDropdown({ user, collapsed, isMobile, closeMobile, roleColor }) 
   const navigate = useNavigate();
 
   const handleProfile = () => {
-    navigate(`/${user.role}/profile`);
+    navigate('/farmer/profile');
     if (isMobile) closeMobile();
   };
 
@@ -87,7 +87,7 @@ function ProfileDropdown({ user, collapsed, isMobile, closeMobile, roleColor }) 
             </Avatar>
             <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-semibold text-sidebar-foreground truncate">{user.fullName}</p>
-              <p className="text-xs text-muted-foreground capitalize">{roleColor.label}</p>
+              <p className="text-xs text-muted-foreground capitalize">Farmer</p>
             </div>
           </div>
         </Button>

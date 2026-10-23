@@ -2,7 +2,6 @@ import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
-import AgronomistProfile from '../models/agronomistProfile.model.js';
 import AuthSession from '../models/authSession.model.js';
 import Media from '../models/media.model.js';
 import { uploadToCloudinary } from '../services/cloudinary.service.js';
@@ -43,12 +42,10 @@ export const register = asyncHandler(async (req, res) => {
     };
   }
 
-  // Create user as farmer
   const user = await User.create({
     fullName,
     mobileNumber,
     passwordHash: password, // Will be hashed by pre-save hook
-    role: 'farmer',
     language: language || 'en',
     location: locationObject,
     address: { district, taluka },
@@ -70,19 +67,6 @@ export const login = asyncHandler(async (req, res) => {
   // Compare password
   const isMatch = await user.matchPassword(password);
   if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
-
-  // Access control for agronomist
-  if (user.role === 'agronomist') {
-    const profile = await AgronomistProfile.findOne({ user: user._id });
-
-    if (!profile || profile.status !== 'verified') {
-      const message =
-        profile?.status === 'rejected'
-          ? 'Your application has been rejected. Please contact support.'
-          : 'Your account is waiting for admin approval.';
-      return res.status(403).json({ message });
-    }
-  }
 
   // Generate tokens
   const { accessToken, refreshToken } = generateTokens(user._id);

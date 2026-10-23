@@ -25,7 +25,7 @@ const removeMediaById = async (mediaId) => {
 
 // --- List All Farmers ---
 export const listFarmers = asyncHandler(async (req, res) => {
-  const farmers = await User.find({ role: 'farmer' }).select('-passwordHash').sort({ createdAt: -1 });
+  const farmers = await User.find().select('-passwordHash').sort({ createdAt: -1 });
   res.json(farmers);
 });
 
@@ -41,7 +41,7 @@ export const listAgronomists = asyncHandler(async (req, res) => {
 
 // --- Delete Farmer ---
 export const deleteFarmer = asyncHandler(async (req, res) => {
-  const farmer = await User.findOne({ _id: req.params.id, role: 'farmer' });
+  const farmer = await User.findOne({ _id: req.params.id });
   if (!farmer) {
     return res.status(404).json({ message: 'Farmer not found' });
   }
@@ -56,7 +56,7 @@ export const deleteFarmer = asyncHandler(async (req, res) => {
 
 // --- Delete Agronomist ---
 export const deleteAgronomist = asyncHandler(async (req, res) => {
-  const agronomist = await User.findOne({ _id: req.params.id, role: 'agronomist' });
+  const agronomist = await User.findOne({ _id: req.params.id });
   if (!agronomist) {
     return res.status(404).json({ message: 'Agronomist not found' });
   }

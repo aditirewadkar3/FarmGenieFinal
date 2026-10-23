@@ -71,7 +71,6 @@ const Register = () => {
       mobileNumber: formData.mobileNumber,
       password: formData.password,
       language: formData.language,
-      role: "farmer",
     });
 
     if (result.success) {

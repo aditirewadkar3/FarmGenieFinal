@@ -30,23 +30,6 @@ import Schemes from './pages/farmer/Schemes';
 import EquipmentMarketplace from './pages/farmer/EquipmentMarketplace';
 import ConnectedRetailers from './pages/farmer/ConnectedRetailers';
 
-// Admin Pages
-import AdminDashboard from './pages/admin/AdminDashboard';
-import Farmers from './pages/admin/Farmers';
-import Agronomists from './pages/admin/Agronomists';
-import Facilities from './pages/admin/Facilities';
-import Seeds from './pages/admin/Seeds';
-import Fertilizers from './pages/admin/Fertilizers';
-
-// Agronomist Pages
-import AgronomistDashboard from './pages/agronomist/AgronomistDashboard';
-import AgronomistProfile from './pages/agronomist/AgronomistProfile';
-
-// Retailer Pages
-import RetailerDashboard from './pages/retailer/RetailerDashboard';
-import RetailerMarketplace from './pages/retailer/RetailerMarketplace';
-import ConnectedFarmers from './pages/retailer/ConnectedFarmers';
-
 // ── Public page minimal top bar ────────────────────────────────────────────
 const PublicTopBar = () => {
   const { user } = useAuth();
@@ -140,38 +123,16 @@ function App() {
           <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
 
           {/* Farmer */}
-          <Route path="/farmer" element={<ProtectedRoute allowedRoles={['farmer']}><FarmerDashboard /></ProtectedRoute>} />
-          <Route path="/farmer/crops" element={<ProtectedRoute allowedRoles={['farmer']}><CropManagement /></ProtectedRoute>} />
-          <Route path="/farmer/disease-reports" element={<ProtectedRoute allowedRoles={['farmer']}><DiseaseReports /></ProtectedRoute>} />
-          <Route path="/farmer/weather" element={<ProtectedRoute allowedRoles={['farmer']}><Weather /></ProtectedRoute>} />
-          <Route path="/farmer/market" element={<ProtectedRoute allowedRoles={['farmer']}><Market /></ProtectedRoute>} />
-          <Route path="/farmer/supply-chain" element={<ProtectedRoute allowedRoles={['farmer']}><SupplyChainDashboard /></ProtectedRoute>} />
-          <Route path="/farmer/schemes/:id?" element={<ProtectedRoute allowedRoles={['farmer']}><Schemes /></ProtectedRoute>} />
-          <Route path="/farmer/connected-retailers" element={<ProtectedRoute allowedRoles={['farmer']}><ConnectedRetailers /></ProtectedRoute>} />
-          <Route path="/farmer/equipment" element={<ProtectedRoute allowedRoles={['farmer']}><EquipmentMarketplace /></ProtectedRoute>} />
-          <Route path="/farmer/profile" element={<ProtectedRoute allowedRoles={['farmer']}><UserProfile /></ProtectedRoute>} />
-
-          {/* Admin */}
-          <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/farmers" element={<ProtectedRoute allowedRoles={['admin']}><Farmers /></ProtectedRoute>} />
-          <Route path="/admin/agronomists" element={<ProtectedRoute allowedRoles={['admin']}><Agronomists /></ProtectedRoute>} />
-          <Route path="/admin/facilities" element={<ProtectedRoute allowedRoles={['admin']}><Facilities /></ProtectedRoute>} />
-          <Route path="/admin/seeds" element={<ProtectedRoute allowedRoles={['admin']}><Seeds /></ProtectedRoute>} />
-          <Route path="/admin/fertilizers" element={<ProtectedRoute allowedRoles={['admin']}><Fertilizers /></ProtectedRoute>} />
-          <Route path="/admin/profile" element={<ProtectedRoute allowedRoles={['admin']}><UserProfile /></ProtectedRoute>} />
-
-          {/* Agronomist */}
-          <Route path="/agronomist" element={<ProtectedRoute allowedRoles={['agronomist']}><AgronomistDashboard /></ProtectedRoute>} />
-          <Route path="/agronomist/profile" element={<ProtectedRoute allowedRoles={['agronomist']}><AgronomistProfile /></ProtectedRoute>} />
-
-          {/* Retailer */}
-          <Route path="/retailer" element={<ProtectedRoute allowedRoles={['retailer']}><RetailerDashboard /></ProtectedRoute>} />
-          <Route path="/retailer/marketplace" element={<ProtectedRoute allowedRoles={['retailer']}><RetailerMarketplace /></ProtectedRoute>} />
-          <Route path="/retailer/connected-farmers" element={<ProtectedRoute allowedRoles={['retailer']}><ConnectedFarmers /></ProtectedRoute>} />
-          <Route path="/retailer/weather" element={<ProtectedRoute allowedRoles={['retailer']}><Weather /></ProtectedRoute>} />
-          <Route path="/retailer/market" element={<ProtectedRoute allowedRoles={['retailer']}><Market /></ProtectedRoute>} />
-          <Route path="/retailer/supply-chain" element={<ProtectedRoute allowedRoles={['retailer']}><SupplyChainDashboard /></ProtectedRoute>} />
-          <Route path="/retailer/profile" element={<ProtectedRoute allowedRoles={['retailer']}><UserProfile /></ProtectedRoute>} />
+          <Route path="/farmer" element={<ProtectedRoute><FarmerDashboard /></ProtectedRoute>} />
+          <Route path="/farmer/crops" element={<ProtectedRoute><CropManagement /></ProtectedRoute>} />
+          <Route path="/farmer/disease-reports" element={<ProtectedRoute><DiseaseReports /></ProtectedRoute>} />
+          <Route path="/farmer/weather" element={<ProtectedRoute><Weather /></ProtectedRoute>} />
+          <Route path="/farmer/market" element={<ProtectedRoute><Market /></ProtectedRoute>} />
+          <Route path="/farmer/supply-chain" element={<ProtectedRoute><SupplyChainDashboard /></ProtectedRoute>} />
+          <Route path="/farmer/schemes/:id?" element={<ProtectedRoute><Schemes /></ProtectedRoute>} />
+          <Route path="/farmer/connected-retailers" element={<ProtectedRoute><ConnectedRetailers /></ProtectedRoute>} />
+          <Route path="/farmer/equipment" element={<ProtectedRoute><EquipmentMarketplace /></ProtectedRoute>} />
+          <Route path="/farmer/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

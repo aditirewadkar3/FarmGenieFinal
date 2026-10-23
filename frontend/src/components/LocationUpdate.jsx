@@ -52,9 +52,9 @@ const LocationUpdate = ({ currentLocation, onLocationUpdated }) => {
 
     // Reverse geocoding to get address from coordinates
     // India Nominatim address hierarchy:
-    //   state_district → District (admin_level=5)
-    //   county         → Taluka / Tehsil / Sub-district (admin_level=6)
-    //   suburb/village → Small locality (NOT a taluka)
+    //   state_district â†’ District (admin_level=5)
+    //   county         â†’ Taluka / Tehsil / Sub-district (admin_level=6)
+    //   suburb/village â†’ Small locality (NOT a taluka)
     const reverseGeocode = async (lat, lng) => {
         try {
             setLocationLoading(true);
@@ -76,7 +76,7 @@ const LocationUpdate = ({ currentLocation, onLocationUpdated }) => {
                     '';
 
                 // Taluka: In India, Nominatim maps admin_level=6 (tehsil/taluka) to 'county'
-                // Do NOT use suburb/town/city — those are locality names, not talukas
+                // Do NOT use suburb/town/city â€” those are locality names, not talukas
                 const taluka =
                     data.address.county ||
                     data.address.state_district ||   // last resort if county missing
@@ -142,11 +142,7 @@ const LocationUpdate = ({ currentLocation, onLocationUpdated }) => {
 
             // Redirect to dashboard after 2 seconds
             setTimeout(() => {
-                const dashboardPath = user?.role === 'farmer'
-                    ? '/farmer/dashboard'
-                    : user?.role === 'agronomist'
-                        ? '/agronomist/dashboard'
-                        : '/';
+                const dashboardPath = '/farmer';
                 navigate(dashboardPath);
             }, 2000);
         } catch (err) {
@@ -210,7 +206,7 @@ const LocationUpdate = ({ currentLocation, onLocationUpdated }) => {
                                 }, 1000);
                                 return;
                             }
-                            errorMessage = 'Location request timed out. This can happen if:\n• GPS signal is weak (try moving near a window)\n• Location services are disabled on your device\n• You\'re in an area with poor GPS reception\n\nYou can manually select your location on the map below.';
+                            errorMessage = 'Location request timed out. This can happen if:\nâ€¢ GPS signal is weak (try moving near a window)\nâ€¢ Location services are disabled on your device\nâ€¢ You\'re in an area with poor GPS reception\n\nYou can manually select your location on the map below.';
                             break;
                         default:
                             errorMessage = 'Failed to get your location. Please try again or manually select your location on the map.';
@@ -383,7 +379,7 @@ const LocationUpdate = ({ currentLocation, onLocationUpdated }) => {
       `}</style>
 
             <h3 className="location-section-title">
-                <span>📍</span>
+                <span>ðŸ“</span>
                 <span>Update Your Location</span>
             </h3>
             <p className="location-description">
@@ -451,7 +447,7 @@ const LocationUpdate = ({ currentLocation, onLocationUpdated }) => {
                 {locationData.latitude && (
                     <div className="location-info">
                         <p className="location-info-text">
-                            <span>🌍</span>
+                            <span>ðŸŒ</span>
                             <span>
                                 Selected Location: {locationData.latitude}, {locationData.longitude}
                             </span>

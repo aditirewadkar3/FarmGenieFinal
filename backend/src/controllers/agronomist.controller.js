@@ -106,9 +106,7 @@ export const findLocalFarmers = asyncHandler(async (req, res) => {
   const agronomistDistrict = agronomist.address.district.trim().toLowerCase();
 
   // 2. Find farmers with the same district and populate profile photo
-  const farmers = await User.find({
-    role: 'farmer',
-  })
+  const farmers = await User.find({})
     .select('fullName mobileNumber address profilePhoto')
     .populate({
       path: 'profilePhoto',

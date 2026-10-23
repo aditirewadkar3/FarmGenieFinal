@@ -286,7 +286,7 @@ const Home = () => {
                 </Link>
               </>
             ) : (
-              <Link to={user.role === 'admin' ? '/admin' : user.role === 'farmer' ? '/farmer' : '/agronomist'}
+              <Link to="/farmer"
                 className="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-lg rounded-2xl shadow-2xl shadow-emerald-500/40 hover:shadow-emerald-400/60 transition-all duration-300 hover:-translate-y-1">
                 Go to Dashboard →
               </Link>

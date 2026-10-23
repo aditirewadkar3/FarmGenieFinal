@@ -27,11 +27,6 @@ export const initChat = asyncHandler(async (req, res) => {
         return res.status(404).json({ success: false, message: "Recipient user not found." });
     }
 
-    // Simplified role check: Ensure both users have valid roles
-    const allowedRoles = ['farmer', 'agronomist', 'retailer'];
-    if (!allowedRoles.includes(req.user.role) || !allowedRoles.includes(otherUser.role)) {
-        return res.status(403).json({ success: false, message: "Role not authorized for expert/business chat." });
-    }
 
     // ID Normalization: sort as strings so A-B and B-A always produce the same pair
     // Cast to ObjectId so Mongoose's compound index query matches correctly
@@ -145,14 +140,8 @@ export const getChatHistory = asyncHandler(async (req, res) => {
  */
 export const getMyChats = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const role = req.user.role;
     const { category } = req.query;
-
-    console.log(`[getMyChats] User: ${userId}, Role: ${role}, Category: ${category}`);
-    if (!['farmer', 'agronomist', 'retailer'].includes(role)) {
-        console.warn(`[getMyChats] Forbidden role: ${role}`);
-        return res.status(403).json({ success: false, message: "Role not authorized for expert/business chat." });
-    }
+    console.log(`[getMyChats] User: ${userId}, Category: ${category}`);
 
     // For robustness, especially with Retailer-Retailer chats, check both slots
     let query = {

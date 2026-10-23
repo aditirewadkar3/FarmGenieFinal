@@ -9,7 +9,7 @@ import {
     getFilters,
     getMarketStatsCtrl,
 } from '../controllers/market.controller.js';
-import { protect, authorizeRoles } from '../middleware/auth.middleware.js';
+import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
@@ -27,8 +27,8 @@ router.get('/history/:commodity', protect, getPriceHistory);
 // GET /api/v1/market/predict/:commodity?district=Nashik
 router.get('/predict/:commodity', protect, getPricePrediction);
 
-// GET /api/v1/market/my-crops (farmer only)
-router.get('/my-crops', protect, authorizeRoles('farmer'), getMyCropPrices);
+// GET /api/v1/market/my-crops
+router.get('/my-crops', protect, getMyCropPrices);
 
 // GET /api/v1/market/filters
 router.get('/filters', protect, getFilters);
@@ -36,10 +36,10 @@ router.get('/filters', protect, getFilters);
 // GET /api/v1/market/stats
 router.get('/stats', protect, getMarketStatsCtrl);
 
-// POST /api/v1/market/scrape — manually trigger scrape cycle (farmer or admin)
-router.post('/scrape', protect, authorizeRoles('admin', 'farmer'), triggerScrape);
+// POST /api/v1/market/scrape — manually trigger scrape cycle
+router.post('/scrape', protect, triggerScrape);
 
 // Legacy alias so old frontend code still works
-router.post('/fetch-daily', protect, authorizeRoles('admin', 'farmer'), triggerScrape);
+router.post('/fetch-daily', protect, triggerScrape);
 
 export default router;

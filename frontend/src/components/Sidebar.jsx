@@ -25,28 +25,13 @@ const Sidebar = ({ isOpen, onClose }) => {
     const { t } = useLanguage();
     const { isDark } = useTheme();
 
-    const getNavLinks = () => {
-        if (!user) return [];
-        if (user.role === 'farmer') return [
-            { path: '/farmer', label: 'Dashboard', icon: Home },
-            { path: '/farmer/crops', label: 'My Crops', icon: Sprout },
-            { path: '/farmer/disease-reports', label: 'Disease Reports', icon: ClipboardList },
-            { path: '/farmer/weather', label: 'Weather Updates', icon: CloudSun },
-            { path: '/farmer/schemes', label: 'Govt Schemes', icon: ClipboardList },
-        ];
-        if (user.role === 'admin') return [
-            { path: '/admin', label: 'Dashboard', icon: Home },
-            { path: '/admin/farmers', label: 'Farmers', icon: Users },
-            { path: '/admin/agronomists', label: 'Agronomists', icon: Microscope },
-        ];
-        if (user.role === 'agronomist') return [
-            { path: '/agronomist', label: 'Dashboard', icon: Home },
-            { path: '/agronomist/profile', label: 'Profile Settings', icon: UserCircle },
-        ];
-        return [];
-    };
-
-    const navLinks = getNavLinks();
+    const navLinks = user ? [
+        { path: '/farmer', label: 'Dashboard', icon: Home },
+        { path: '/farmer/crops', label: 'My Crops', icon: Sprout },
+        { path: '/farmer/disease-reports', label: 'Disease Reports', icon: ClipboardList },
+        { path: '/farmer/weather', label: 'Weather Updates', icon: CloudSun },
+        { path: '/farmer/schemes', label: 'Govt Schemes', icon: ClipboardList },
+    ] : [];
 
     const isActive = (path) =>
         location.pathname === path ||
@@ -133,13 +118,13 @@ const Sidebar = ({ isOpen, onClose }) => {
                                             </div>
                                             <div className="overflow-hidden">
                                                 <p className="text-sm font-black truncate text-[var(--text-primary)]">{user.fullName}</p>
-                                                <p className="text-xs font-medium capitalize truncate text-[var(--text-secondary)]">{user.role}</p>
+                                                
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
-                                {user?.role === 'farmer' && (
+                                {user && (
                                     <>
                                         <div className="mt-4 p-4 rounded-[2rem] bg-gradient-to-br from-emerald-600 to-teal-700 text-black shadow-xl shadow-emerald-500/20 group relative overflow-hidden">
                                             <div className="relative z-10">

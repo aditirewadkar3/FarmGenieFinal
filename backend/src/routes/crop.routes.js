@@ -1,16 +1,13 @@
 import express from 'express';
-import { addCrop, getCrops, deleteCrop, getCropsByFarmer } from '../controllers/crop.controller.js';
-import { protect, authorizeRoles } from '../middleware/auth.middleware.js';
+import { addCrop, getCrops, deleteCrop } from '../controllers/crop.controller.js';
+import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 router.use(protect);
 
 // Farmer routes
-router.post('/', authorizeRoles('farmer'), addCrop);
-router.get('/', authorizeRoles('farmer', 'retailer'), getCrops);
-router.delete('/:id', authorizeRoles('farmer'), deleteCrop);
-
-// Agronomist route to view farmer crops
-router.get('/farmer/:farmerId', authorizeRoles('agronomist'), getCropsByFarmer);
+router.post('/', addCrop);
+router.get('/', getCrops);
+router.delete('/:id', deleteCrop);
 
 export default router;
