@@ -164,12 +164,22 @@ logs/
 *.onnx
 *.tflite
 *.pt
+*.safetensors
+*.keras
+*.bin
+*.tar.gz
+*.pb
 
 # Pretrained model directories
 pretrained_models/
 
 # Ultralytics / YOLO runs
 runs/
+
+# ========================
+# Temp / scratch
+# ========================
+tmp/
 
 # ========================
 # Project-specific
