@@ -1,14 +1,11 @@
+# ========================
+# Node.js / JavaScript
+# ========================
+
 # Dependencies
 node_modules/
 /.pnp
 .pnp.js
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Build files
 /dist
@@ -21,14 +18,109 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Local development
-.DS_Store
+# ========================
+# Environment variables
+# ========================
+.env
+.env.*
 .env.local
+.env.development
 .env.development.local
+.env.test
 .env.test.local
+.env.production
 .env.production.local
 
-# IDE
+# ========================
+# Python / pip / venv
+# ========================
+
+# Byte-compiled / optimised / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.Python
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+*.egg
+.installed.cfg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# MyPy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.pyre/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# Rope project settings
+.ropeproject
+
+# mkdocs
+/site
+
+# PEP 582
+__pypackages__/
+
+# ========================
+# IDE / Editor
+# ========================
 .idea/
 .vscode/
 *.suo
@@ -37,83 +129,54 @@ yarn-error.log*
 *.sln
 *.sw?
 
+# ========================
+# OS files
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
 # Temp files
+# ========================
 *.tmp
 *.bak
 *.swp
 *~.nib
 
-# Backend specific
-/backend/uploads/
-/backend/.env
-/backend/.env.*
-
-# Frontend specific
-/frontend/.env
-/frontend/.env.*
-/frontend/node_modules/
-/frontend/dist/
-
-# ML service
-/ml-service/.env
-/ml-service/venv/
-/ml-service/__pycache__/
-/ml-service/*.py[cod]
-/ml-service/*.so
-/ml-service/.Python
-/ml-service/build/
-/ml-service/develop-eggs/
-/ml-service/dist/
-/ml-service/downloads/
-/ml-service/eggs/
-/ml-service/lib/
-/ml-service/lib64/
-/ml-service/parts/
-/ml-service/sdist/
-/ml-service/var/
-/ml-service/wheels/
-/ml-service/*.egg-info/
-/ml-service/.installed.cfg
-/ml-service/.eggs/
-/ml-service/.pytest_cache/
-/ml-service/.coverage
-/ml-service/htmlcov/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
+# ========================
 # Database
+# ========================
 *.sqlite
 *.sqlite3
 
+# ========================
 # Logs
-logs
+# ========================
+logs/
 *.log
 
-# Local development
-.env.development
-.env.test
-.env.production
-
-# Misc
-.DS_Store
-Thumbs.db
-
-# Crop Project / ML Models
-/crop_project/.env
-/crop_project/.venv/
-/crop_project/__pycache__/
-/crop_project/runs/
-/crop_project/*.pt
-/crop_project/pretrained_models/
-
-# Backend nested node_modules
-/backend/src/node_modules/
-/backend/node_modules/
-
-# Large ML model files (global)
+# ========================
+# Large ML model files
+# ========================
 *.pth
 *.h5
 *.pkl
 *.onnx
 *.tflite
+*.pt
+
+# Pretrained model directories
+pretrained_models/
+
+# Ultralytics / YOLO runs
+runs/
+
+# ========================
+# Project-specific
+# ========================
+
+# Backend
+/backend/uploads/
+
+# ML service
+/ml_projet_models/pretrained_models/
