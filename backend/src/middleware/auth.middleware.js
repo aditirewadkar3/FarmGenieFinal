@@ -22,7 +22,8 @@ export const protect = asyncHandler(async (req, res, next) => {
 
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    const userRole = req.user?.role || 'farmer';
+    if (!roles.includes(userRole)) {
       return res.status(403).json({ message: 'Access denied' });
     }
     next();

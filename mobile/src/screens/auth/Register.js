@@ -10,18 +10,12 @@ import { authAPI } from '../../api';
 import { useLanguage } from '../../context/LanguageContext';
 import { colors, spacing, borderRadius, shadows } from '../../theme';
 
-const ROLES = [
-  { value: 'farmer', label: 'Farmer 🌾', icon: 'leaf' },
-  { value: 'retailer', label: 'Retailer 🏪', icon: 'storefront' },
-  { value: 'agronomist', label: 'Agronomist 🔬', icon: 'school' },
-];
-
 export default function Register({ navigation }) {
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [idProof, setIdProof] = useState(null);
   const [form, setForm] = useState({
-    name: '', mobileNumber: '', password: '', confirmPassword: '', role: 'farmer',
+    name: '', mobileNumber: '', password: '', confirmPassword: '',
   });
 
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -49,9 +43,9 @@ export default function Register({ navigation }) {
         name: form.name,
         mobileNumber: form.mobileNumber,
         password: form.password,
-        role: form.role,
+        role: 'farmer',
       }, idProof);
-      Alert.alert('Registration Successful!', 'Your account is pending admin approval. You can login once approved.', [
+      Alert.alert('Registration Successful!', 'Your account has been created. You can now login.', [
         { text: 'OK', onPress: () => navigation.navigate('Login') },
       ]);
     } catch (err) {
@@ -73,20 +67,6 @@ export default function Register({ navigation }) {
         </View>
 
         <View style={[styles.card, shadows.md]}>
-          {/* Role Selection */}
-          <Text style={styles.section}>Select Your Role</Text>
-          <View style={styles.roleRow}>
-            {ROLES.map((r) => (
-              <TouchableOpacity
-                key={r.value}
-                style={[styles.roleChip, form.role === r.value && styles.roleChipActive]}
-                onPress={() => update('role', r.value)}
-              >
-                <Text style={[styles.roleChipText, form.role === r.value && styles.roleChipTextActive]}>{r.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
           {/* Fields */}
           {[
             { key: 'name', label: 'Full Name', placeholder: 'Enter your full name', keyboardType: 'default' },
@@ -109,7 +89,7 @@ export default function Register({ navigation }) {
             </View>
           ))}
 
-          {/* ID Proof */}
+          {/* ID Proof (optional) */}
           <Text style={styles.label}>ID Proof (optional)</Text>
           <TouchableOpacity style={styles.uploadBtn} onPress={pickId}>
             <Ionicons name={idProof ? 'checkmark-circle' : 'cloud-upload'} size={20} color={idProof ? colors.success : colors.textMuted} />
@@ -139,25 +119,26 @@ export default function Register({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   scroll: { flexGrow: 1 },
-  bg: { flex: 1, padding: spacing.md, paddingBottom: spacing.xl },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md, paddingTop: Platform.OS === 'ios' ? 50 : spacing.md },
-  backBtn: { padding: spacing.sm },
-  headerTitle: { fontSize: 22, fontWeight: '800', color: colors.text, marginLeft: spacing.sm },
-  card: { backgroundColor: colors.card, borderRadius: borderRadius.xl, padding: spacing.lg },
-  section: { fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: spacing.sm },
-  roleRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md, flexWrap: 'wrap' },
-  roleChip: { paddingVertical: 8, paddingHorizontal: spacing.md, borderRadius: borderRadius.round, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.background },
-  roleChipActive: { borderColor: colors.primary, backgroundColor: colors.primaryPale },
-  roleChipText: { fontSize: 12, fontWeight: '600', color: colors.textMuted },
-  roleChipTextActive: { color: colors.primaryDark, fontWeight: '700' },
-  label: { fontSize: 13, fontWeight: '700', color: colors.text, marginBottom: 6, marginTop: spacing.sm },
-  input: { borderWidth: 2, borderColor: colors.border, borderRadius: borderRadius.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, fontSize: 15, color: colors.text, backgroundColor: colors.background, height: 48 },
-  uploadBtn: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderWidth: 2, borderColor: colors.border, borderRadius: borderRadius.md, padding: spacing.md, backgroundColor: colors.background, borderStyle: 'dashed' },
-  uploadText: { fontSize: 13, color: colors.textMuted, fontWeight: '600' },
-  submitBtn: { marginTop: spacing.lg, borderRadius: borderRadius.md, overflow: 'hidden' },
-  submitGrad: { padding: spacing.md, alignItems: 'center' },
-  submitText: { fontSize: 16, fontWeight: '800', color: '#fff' },
-  loginLink: { alignItems: 'center', marginTop: spacing.md },
-  loginLinkText: { fontSize: 13, color: colors.textMuted },
-  loginLinkBold: { fontWeight: '800', color: colors.primary },
+  bg: { flex: 1, padding: spacing.lg, paddingTop: Platform.OS === 'ios' ? 60 : 40 },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xl },
+  backBtn: { marginRight: spacing.md, padding: 4 },
+  headerTitle: { fontSize: 24, fontWeight: '800', color: colors.primaryDark },
+  card: { backgroundColor: colors.surface, borderRadius: borderRadius.xl, padding: spacing.xl },
+  label: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, marginBottom: 4, marginTop: spacing.sm },
+  input: {
+    backgroundColor: colors.background, borderRadius: borderRadius.md, borderWidth: 1,
+    borderColor: colors.border, padding: spacing.md, fontSize: 14, color: colors.textPrimary,
+  },
+  uploadBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderWidth: 1,
+    borderColor: colors.border, borderStyle: 'dashed', borderRadius: borderRadius.md,
+    padding: spacing.md, justifyContent: 'center', marginTop: 4, backgroundColor: colors.background,
+  },
+  uploadText: { fontSize: 13, color: colors.textMuted },
+  submitBtn: { marginTop: spacing.xl, borderRadius: borderRadius.lg, overflow: 'hidden' },
+  submitGrad: { paddingVertical: spacing.md, alignItems: 'center' },
+  submitText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  loginLink: { marginTop: spacing.lg, alignItems: 'center' },
+  loginLinkText: { fontSize: 14, color: colors.textSecondary },
+  loginLinkBold: { color: colors.primary, fontWeight: '700' },
 });

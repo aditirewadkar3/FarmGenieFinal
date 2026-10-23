@@ -39,9 +39,9 @@ import AIKeyModal from './AIKeyModal';
 
 // ── Page context map ─────────────────────────────────────────────────────────
 const PAGE_CONTEXTS = {
-    '/': 'Home page — shows what KrishiBandhu does, role selection (Farmer / Agronomist / Admin), and key features overview.',
+    '/': 'Home page — shows what KrishiBandhu does and key features overview.',
     '/login': 'Login page — user can sign in with their mobile number and password.',
-    '/register': 'Registration page — new users can create a Farmer, Agronomist, or Admin account.',
+    '/register': 'Registration page — new users can create an account.',
     '/farmer': 'Farmer Dashboard — My Crops, Disease Detection & Reports, Weather Forecast, Advisories, and local agronomists in district.',
     '/farmer/crops': 'My Crops page — farmer can add, view, and delete crops they are growing.',
     '/farmer/disease-reports': 'Crop Disease Detection & Reports page — select a crop (Banana, Chilli, Radish, Groundnut, Cauliflower), upload a photo, AI detects diseases. AI then shows symptoms, causes, why the disease occurs, treatment, prevention, and natural remedies.',

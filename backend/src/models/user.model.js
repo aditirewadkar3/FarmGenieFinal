@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      required: true,
+      default: 'farmer',
       enum: ['farmer', 'admin', 'agronomist', 'retailer'],
     },
     profilePhoto: {

@@ -15,55 +15,23 @@ const sanitizeUser = (userDoc) => {
   return userObj;
 };
 
-// --- Registration (Farmer / Agronomist / Admin) ---
+// --- Registration (Every user is registered as a farmer) ---
 export const register = asyncHandler(async (req, res) => {
   const {
     fullName,
     mobileNumber,
     password,
-    role,
     language,
     district,
     taluka,
-    qualification,
-    experience,
     longitude,
     latitude,
   } = req.body;
-
-  // Prevent registration of admin accounts - admin must be created via initialization
-  if (role === 'admin') {
-    return res.status(400).json({
-      message: 'Admin accounts cannot be registered through this endpoint.',
-    });
-  }
-
-  // Default role to 'farmer' if not provided
-  const userRole = role || 'farmer';
 
   // Check if user already exists
   const existing = await User.findOne({ mobileNumber });
   if (existing) {
     return res.status(400).json({ message: 'Mobile number is already registered.' });
-  }
-
-  // Validate agronomist-specific required fields
-  if (userRole === 'agronomist') {
-    if (!qualification || !experience) {
-      return res.status(400).json({ 
-        message: 'Qualification and experience are required for agronomist registration.' 
-      });
-    }
-    if (!longitude || !latitude) {
-      return res.status(400).json({ 
-        message: 'Location is required for agronomist registration. Please select your location on the map.' 
-      });
-    }
-    if (!req.file) {
-      return res.status(400).json({ 
-        message: 'ID proof document is required for agronomist registration.' 
-      });
-    }
   }
 
   // Build location object if provided
@@ -75,47 +43,19 @@ export const register = asyncHandler(async (req, res) => {
     };
   }
 
-  // Create user with basic info
+  // Create user as farmer
   const user = await User.create({
     fullName,
     mobileNumber,
     passwordHash: password, // Will be hashed by pre-save hook
-    role: userRole,
+    role: 'farmer',
     language: language || 'en',
     location: locationObject,
     address: { district, taluka },
   });
 
-  // --- AGRONOMIST REGISTRATION LOGIC ---
-  if (userRole === 'agronomist') {
-    try {
-      const result = await uploadToCloudinary(req.file, 'id_proofs');
-      const idProofMedia = await Media.create({
-        url: result.secure_url,
-        publicId: result.public_id,
-        uploadedBy: user._id,
-        contentType: req.file.mimetype,
-      });
-
-      await AgronomistProfile.create({
-        user: user._id,
-        qualification,
-        experience: Number(experience) || 0,
-        idProof: idProofMedia._id,
-        status: 'pending',
-      });
-    } catch (uploadError) {
-      await User.findByIdAndDelete(user._id);
-      console.error('Agronomist profile creation failed:', uploadError);
-      return res.status(500).json({ message: 'Could not process registration. Please try again.' });
-    }
-  }
-
   res.status(201).json({
-    message:
-      userRole === 'agronomist'
-        ? 'Registration successful. Your profile is now pending verification.'
-        : 'Registered successfully.',
+    message: 'Registered successfully.',
     user: sanitizeUser(user),
   });
 });

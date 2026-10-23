@@ -147,48 +147,10 @@ const Home = () => {
   const { isDark } = useTheme();
   const [statsRef, statsVisible] = useReveal();
   const [featuresRef, featuresVisible] = useReveal();
-  const [rolesRef, rolesVisible] = useReveal();
-
   const c1 = useCounter('90', 1600, statsVisible);
   const c2 = useCounter('5', 1200, statsVisible);
   const c3 = useCounter('3', 1000, statsVisible);
   const c4 = useCounter('24', 1400, statsVisible);
-
-  const roles = [
-    {
-      role: 'farmer',
-      emoji: '👨‍🌾',
-      title: 'Farmer',
-      description: 'Detect crop diseases, manage your crops, check live market prices and get expert advice from local agronomists.',
-      gradient: 'from-emerald-500 via-green-500 to-teal-600',
-      glow: 'hover:shadow-emerald-300/60',
-      badge: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-      link: '/register',
-      features: ['Disease Detection', 'Crop Management', 'Market Prices'],
-    },
-    {
-      role: 'agronomist',
-      emoji: '🔬',
-      title: 'Agronomist',
-      description: 'Help farmers with expert guidance, view their crops, and provide professional agricultural consultations.',
-      gradient: 'from-cyan-500 via-teal-500 to-blue-600',
-      glow: 'hover:shadow-cyan-300/60',
-      badge: 'bg-cyan-100 text-cyan-700 border-cyan-200',
-      link: '/register',
-      features: ['Farmer Connect', 'Crop Analysis', 'District View'],
-    },
-    {
-      role: 'admin',
-      emoji: '🛡️',
-      title: 'Admin',
-      description: 'Manage the platform, verify agronomist accounts, and oversee all system operations from a control panel.',
-      gradient: 'from-slate-600 via-gray-700 to-slate-800',
-      glow: 'hover:shadow-gray-400/50',
-      badge: 'bg-gray-100 text-gray-700 border-gray-200',
-      link: '/login',
-      features: ['User Management', 'Verification', 'Analytics'],
-    },
-  ];
 
   const features = [
     { icon: '🔍', title: 'AI Disease Detection', desc: 'Upload a photo — YOLO AI identifies crop diseases with 90%+ accuracy in seconds.', from: 'from-orange-400', to: 'to-red-500', delay: 0 },
@@ -314,7 +276,7 @@ const Home = () => {
                   className="group relative overflow-hidden inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-base rounded-2xl shadow-2xl shadow-emerald-500/40 hover:shadow-emerald-400/60 transition-all duration-300 hover:-translate-y-1">
                   <span className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <span className="relative flex items-center gap-3">
-                    👨‍🌾 Register as Farmer
+                    🌱 Register Now
                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
                   </span>
                 </Link>
@@ -434,7 +396,7 @@ const Home = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { step: '01', icon: '📝', title: 'Register', desc: 'Create your free account as a Farmer, Agronomist, or Admin. Set your location for personalised results.', color: 'from-emerald-400 to-teal-500' },
+                { step: '01', icon: '📝', title: 'Register', desc: 'Create your free account and set your location for personalised crop advisory and insights.', color: 'from-emerald-400 to-teal-500' },
                 { step: '02', icon: '📸', title: 'Detect & Explore', desc: 'Upload crop photos for AI disease detection, browse market prices, and check weather forecasts.', color: 'from-teal-400 to-cyan-500' },
                 { step: '03', icon: '💡', title: 'Get Expert Help', desc: 'Connect with verified agronomists in your district and ask our AI chatbot anything, anytime.', color: 'from-cyan-400 to-blue-500' },
               ].map((s, i) => (
@@ -454,66 +416,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* ── ROLE CARDS ────────────────────────────────────────────────────── */}
-      {!isAuthenticated && (
-        <section className="py-24 relative" ref={rolesRef}>
-          {isDark && <div className="absolute inset-0 bg-[#060a14]" />}
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`text-center mb-16 reveal ${rolesVisible ? 'visible' : ''}`}>
-              <span className={`inline-block text-sm font-bold uppercase tracking-[0.2em] mb-4 px-4 py-2 glass rounded-full border ${isDark ? 'text-violet-400 border-violet-500/30' : 'text-violet-600 border-violet-400/40'}`}>
-                ✦ Get Started
-              </span>
-              <h2 className={`text-4xl sm:text-5xl font-black mt-4 mb-4 ${isDark ? 'text-white' : 'text-[#1e1b4b]'}`}>
-                Choose Your Role
-              </h2>
-              <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Join thousands of farmers already using KrishiBandhu</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {roles.map((r, i) => (
-                <Link key={r.role} to={r.link}
-                  className={`card-3d group relative overflow-hidden glass rounded-3xl border border-white/10 hover:border-white/20 hover:shadow-2xl ${r.glow} transition-all duration-300 reveal ${rolesVisible ? 'visible' : ''}`}
-                  style={{ animationDelay: `${i * 120}ms` }}>
-                  {/* Top gradient strip */}
-                  <div className={`h-1 bg-gradient-to-r ${r.gradient}`} />
-                  {/* Glow on hover */}
-                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${r.gradient} opacity-0`} style={{ opacity: 0 }} />
-
-                  <div className={`relative p-8 ${isDark ? '' : 'bg-white'}`}>
-                    {/* Icon */}
-                    <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${r.gradient} flex items-center justify-center text-5xl mb-6 shadow-2xl group-hover:scale-110 transition-transform duration-300`}>
-                      {r.emoji}
-                    </div>
-
-                    {/* Badge & title */}
-                    <span className={`inline-block text-xs font-extraBold uppercase tracking-wider px-3 py-1 rounded-full border mb-3 ${r.badge}`}>
-                      {r.title}
-                    </span>
-                    <h3 className={`text-2xl font-black mb-3 ${isDark ? 'text-white' : 'text-[#1e1b4b]'}`}>{r.title}</h3>
-                    <p className={`text-sm leading-relaxed mb-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{r.description}</p>
-
-                    {/* Feature pills */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {r.features.map((f) => (
-                        <span key={f} className={`text-xs px-3 py-1 rounded-full border font-medium ${isDark ? 'bg-white/8 text-gray-300 border-white/10' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>
-                          {f}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* CTA */}
-                    <div className="flex items-center gap-2 text-sm font-bold text-emerald-400 group-hover:gap-3 transition-all">
-                      Get Started
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ── LANGUAGES STRIP ───────────────────────────────────────────────── */}
       <section className="py-16 relative overflow-hidden">
