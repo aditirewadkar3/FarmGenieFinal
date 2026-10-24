@@ -47,14 +47,16 @@
     "weather": "मौसम",
     "advisories": "सलाह",
     "farmers": "किसान",
-    "agronomists": "कृषि विज्ञानी"
+    "agronomists": "कृषि विज्ञानी",
+    "cropRecommendation": "फसल अनुशंसा"
   },
   "farmer": {
     "dashboard": "किसान डैशबोर्ड",
     "crops": "फसल गाइड",
     "diseaseReports": "रोग रिपोर्ट",
     "weather": "मौसम",
-    "advisories": "सलाह"
+    "advisories": "सलाह",
+    "cropRecommendation": "फसल अनुशंसा"
   },
   "admin": {
     "dashboard": "एडमिन डैशबोर्ड",

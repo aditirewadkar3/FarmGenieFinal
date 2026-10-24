@@ -47,14 +47,16 @@
     "weather": "Weather",
     "advisories": "Advisories",
     "farmers": "Farmers",
-    "agronomists": "Agronomists"
+    "agronomists": "Agronomists",
+    "cropRecommendation": "Crop Recommendation"
   },
   "farmer": {
     "dashboard": "Farmer Dashboard",
     "crops": "Crop Guide",
     "diseaseReports": "Disease Reports",
     "weather": "Weather",
-    "advisories": "Advisories"
+    "advisories": "Advisories",
+    "cropRecommendation": "Crop Recommendation"
   },
   "admin": {
     "dashboard": "Admin Dashboard",

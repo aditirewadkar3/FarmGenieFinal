@@ -25,7 +25,7 @@ const createGroqClient = (userApiKey = null) => {
 };
 
 // Keep old name as alias so nothing else breaks
-const createClient = createGroqClient;
+export const createClient = createGroqClient;
 
 // ── Gemini client ────────────────────────────────────────────────────────────
 const createGeminiClient = () => {
@@ -77,7 +77,7 @@ const FALLBACK_MODEL = "openai/gpt-oss-20b";
  * Calls Groq (PRIMARY → FALLBACK_MODEL on 429).
  * If Groq itself is unavailable / quota exceeded entirely, retries via Gemini.
  */
-const callWithFallback = async (client, params) => {
+export const callWithFallback = async (client, params) => {
   // ── Try Groq ────────────────────────────────────────────────────────────
   if (client) {
     try {
@@ -134,7 +134,7 @@ const DEVANAGARI_DIGIT_MAP = {
   '\u0665': '5', '\u0666': '6', '\u0667': '7', '\u0668': '8', '\u0669': '9',
 };
 
-const normalizeAndParseJSON = (raw) => {
+export const normalizeAndParseJSON = (raw) => {
   // 1. Strip markdown fences
   let text = stripFences(raw);
 

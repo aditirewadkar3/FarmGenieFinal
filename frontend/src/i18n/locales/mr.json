@@ -47,14 +47,16 @@
     "weather": "हवामान",
     "advisories": "सल्ले",
     "farmers": "शेतकरी",
-    "agronomists": "कृषी शास्त्रज्ञ"
+    "agronomists": "कृषी शास्त्रज्ञ",
+    "cropRecommendation": "पीक शिफारस"
   },
   "farmer": {
     "dashboard": "शेतकरी डॅशबोर्ड",
     "crops": "पीक मार्गदर्शक",
     "diseaseReports": "रोग अहवाल",
     "weather": "हवामान",
-    "advisories": "सल्ले"
+    "advisories": "सल्ले",
+    "cropRecommendation": "पीक शिफारस"
   },
   "admin": {
     "dashboard": "अॅडमिन डॅशबोर्ड",

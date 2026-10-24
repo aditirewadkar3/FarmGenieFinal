@@ -22,6 +22,7 @@ import Messages from './pages/Messages';
 // Farmer Pages
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
 import CropManagement from './pages/farmer/Crops';
+import CropRecommendation from './pages/farmer/CropRecommendation';
 import YieldPredictionPage from './pages/farmer/YieldPrediction';
 import DiseaseReports from './pages/farmer/DiseaseReports';
 import Weather from './pages/farmer/Weather';
@@ -126,6 +127,7 @@ function App() {
           {/* Farmer */}
           <Route path="/farmer" element={<ProtectedRoute><FarmerDashboard /></ProtectedRoute>} />
           <Route path="/farmer/crops" element={<ProtectedRoute><CropManagement /></ProtectedRoute>} />
+          <Route path="/farmer/crop-recommendation" element={<ProtectedRoute><CropRecommendation /></ProtectedRoute>} />
           <Route path="/farmer/yield-prediction" element={<ProtectedRoute><YieldPredictionPage /></ProtectedRoute>} />
           <Route path="/farmer/disease-reports" element={<ProtectedRoute><DiseaseReports /></ProtectedRoute>} />
           <Route path="/farmer/weather" element={<ProtectedRoute><Weather /></ProtectedRoute>} />

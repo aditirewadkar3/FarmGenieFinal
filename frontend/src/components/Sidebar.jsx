@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Home,
-    Sprout,
+    Sprout, Compass,
     ClipboardList,
     CloudSun,
     BarChart3,
@@ -28,6 +28,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     const navLinks = user ? [
         { path: '/farmer', label: 'Dashboard', icon: Home },
         { path: '/farmer/crops', label: 'Crop Guide', icon: Sprout },
+        { path: '/farmer/crop-recommendation', label: 'Crop Recommendation', icon: Compass },
         { path: '/farmer/disease-reports', label: 'Disease Reports', icon: ClipboardList },
         { path: '/farmer/weather', label: 'Weather Updates', icon: CloudSun },
         { path: '/farmer/schemes', label: 'Govt Schemes', icon: ClipboardList },

@@ -118,7 +118,16 @@ export const userAPI = {
 export const cropAPI = {
   predictYield: (data) => api.post('/crops/predict-yield', data),
   getYieldMetadata: () => api.get('/crops/yield-metadata'),
+  getRecommendations: (data) => api.post('/crops/recommend', data),
+  getAIRecommendations: (data) => api.post('/crops/recommend-ai', data),
   getOpenMeteoWeather: (lat, lon) => api.get(`/crops/weather-data?lat=${lat}&lon=${lon}`),
+  getPlannerCrops: () => api.get('/crops/planner-crops'),
+  generateFarmingPlan: (data) => api.post('/crops/plan', data),
+  saveFarmingPlan: (data) => api.post('/crops/farming-plan', data),
+  getSavedFarmingPlans: () => api.get('/crops/farming-plans'),
+  getFarmingPlanById: (id) => api.get(`/crops/farming-plan/${id}`),
+  updatePlanTask: (id, data) => api.put(`/crops/farming-plan/${id}/task`, data),
+  deleteFarmingPlan: (id) => api.delete(`/crops/farming-plan/${id}`),
 };
 
 // Disease Report APIs
