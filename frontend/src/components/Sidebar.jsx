@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
     const navLinks = user ? [
         { path: '/farmer', label: 'Dashboard', icon: Home },
-        { path: '/farmer/crops', label: 'My Crops', icon: Sprout },
+        { path: '/farmer/crops', label: 'Crop Guide', icon: Sprout },
         { path: '/farmer/disease-reports', label: 'Disease Reports', icon: ClipboardList },
         { path: '/farmer/weather', label: 'Weather Updates', icon: CloudSun },
         { path: '/farmer/schemes', label: 'Govt Schemes', icon: ClipboardList },

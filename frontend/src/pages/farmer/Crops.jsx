@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import CropYieldPredictor from '../../components/CropYieldPredictor';
 import {
   Sprout,
   Search,
@@ -28,7 +30,7 @@ import {
   RotateCcw,
   AlertCircle
 } from 'lucide-react';
-import { cropAPI, geminiAPI } from '../../services/api';
+import { geminiAPI } from '../../services/api';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import AIKeyModal from '../../components/AIKeyModal';
@@ -103,14 +105,6 @@ const CropManagement = () => {
   const { lang, t } = useLanguage();
   const { isDark } = useTheme();
 
-  // ── My Crops state ──────────────────────────────────────────────────────────
-  const [myCrops, setMyCrops] = useState([]);
-  const [loadingCrops, setLoadingCrops] = useState(true);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [addForm, setAddForm] = useState({ cropName: '', cropVariety: '', plantingDate: '', area: { value: '', unit: 'acres' } });
-  const [addError, setAddError] = useState('');
-  const [deletingId, setDeletingId] = useState(null);
-
   // ── Crop Management Guide state ──────────────────────────────────────────────
   const [selectedCrop, setSelectedCrop] = useState('');
   const [customCrop, setCustomCrop] = useState('');
@@ -121,56 +115,16 @@ const CropManagement = () => {
   const [guideError, setGuideError] = useState('');
   const [cropImage, setCropImage] = useState('');
   const [imageLoading, setImageLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('guide'); // 'guide' | 'mycrops'
-  const [saveToast, setSaveToast] = useState(''); // success toast message
+  const location = useLocation();
+  const queryTab = new URLSearchParams(location.search).get('tab');
+  const [activeTab, setActiveTab] = useState(queryTab === 'yield' ? 'yield' : 'guide'); // 'guide' | 'yield'
+
+  useEffect(() => {
+    if (queryTab === 'yield') setActiveTab('yield');
+  }, [queryTab]);
   const [showKeyModal, setShowKeyModal] = useState(false);
 
   const guideRef = useRef(null);
-
-  // ── Load my crops ────────────────────────────────────────────────────────────
-  useEffect(() => {
-    fetchMyCrops();
-  }, []);
-
-  const fetchMyCrops = async () => {
-    try {
-      setLoadingCrops(true);
-      const res = await cropAPI.getCrops();
-      setMyCrops(res.data || []);
-    } catch {
-      setMyCrops([]);
-    } finally {
-      setLoadingCrops(false);
-    }
-  };
-
-  const handleAddCrop = async (e) => {
-    e.preventDefault();
-    setAddError('');
-    try {
-      await cropAPI.addCrop({
-        ...addForm,
-        area: { value: parseFloat(addForm.area.value), unit: addForm.area.unit },
-      });
-      setShowAddForm(false);
-      setAddForm({ cropName: '', cropVariety: '', plantingDate: '', area: { value: '', unit: 'acres' } });
-      fetchMyCrops();
-    } catch (err) {
-      setAddError(err.response?.data?.message || 'Failed to add crop');
-    }
-  };
-
-  const handleDeleteCrop = async (id) => {
-    try {
-      setDeletingId(id);
-      await cropAPI.deleteCrop(id);
-      setMyCrops((prev) => prev.filter((c) => c._id !== id));
-    } catch {
-      // silent
-    } finally {
-      setDeletingId(null);
-    }
-  };
 
   // ── Fetch crop guide ──────────────────────────────────────────────────────────
   const handleGetGuide = async () => {
@@ -182,7 +136,6 @@ const CropManagement = () => {
     setGuide(null);
     setGuideError('');
     setCropImage('');
-    setSaveToast('');
 
     // Check for User's API Key
     const userStored = JSON.parse(localStorage.getItem('user'));
@@ -201,32 +154,6 @@ const CropManagement = () => {
       const info = res.data.info;
       setGuide(info);
       setTimeout(() => guideRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-
-      // ── Auto-save to My Crops (skip if already saved for same crop+area) ──
-      const alreadySaved = myCrops.some(
-        (c) =>
-          c.cropName?.toLowerCase() === cropName.toLowerCase() &&
-          String(c.area?.value || c.area) === String(parseFloat(area)) &&
-          (c.area?.unit || 'acres') === areaUnit
-      );
-      if (!alreadySaved) {
-        try {
-          await cropAPI.addCrop({
-            cropName: cropName,
-            cropVariety: 'AI Guide',
-            plantingDate: new Date().toISOString().split('T')[0],
-            area: { value: parseFloat(area), unit: areaUnit },
-          });
-          await fetchMyCrops(); // refresh list
-          setSaveToast(`✅ "${cropName}" saved to My Crops!`);
-          setTimeout(() => setSaveToast(''), 4000);
-        } catch {
-          // save failed silently — guide still shows
-        }
-      } else {
-        setSaveToast(`📌 "${cropName}" is already in My Crops.`);
-        setTimeout(() => setSaveToast(''), 3000);
-      }
     } catch {
       setGuideError('Could not fetch crop management info. Please try again.');
     } finally {
@@ -277,7 +204,8 @@ const CropManagement = () => {
         <div className="flex gap-2 mb-7 bg-[var(--bg-card)] rounded-2xl p-1.5 shadow border border-[var(--border-card)] fade-up">
           {[
             { id: 'guide', label: t('Crop Guide'), icon: ClipboardList },
-            { id: 'mycrops', label: `${t('My Crops')} (${myCrops.length})`, icon: Sprout },
+            
+            { id: 'yield', label: t('Yield Predictor') || 'Yield Predictor', icon: TrendingUp },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -639,21 +567,6 @@ const CropManagement = () => {
                   </InfoSection>
                 </div>
 
-                {/* ── Save toast ───────────────────────────────────── */}
-                {saveToast && (
-                  <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-300 text-emerald-800
-                    rounded-2xl px-5 py-3.5 shadow fade-up">
-                    <Sprout size={20} className="text-emerald-500" />
-                    <p className="font-semibold text-sm">{saveToast}</p>
-                    <button
-                      onClick={() => { setActiveTab('mycrops'); }}
-                      className="ml-auto text-xs font-bold underline underline-offset-2 text-emerald-700 hover:text-emerald-900 whitespace-nowrap"
-                    >
-                      {t('View My Crops')} <ChevronRight size={12} className="inline" />
-                    </button>
-                  </div>
-                )}
-
                 {/* ── Footer ───────────────────────────────────────── */}
                 <div className="text-center py-4 text-xs text-gray-400 flex items-center justify-center gap-2">
                   <Brain size={12} /> ✨ AI-generated crop guide · Specific to {area} {areaUnit} of {guide.cropName} · Consult a local agronomist for precise advice
@@ -665,175 +578,11 @@ const CropManagement = () => {
         )}
 
         {/* ════════════════════════════════════════════════════════════ */}
-        {/* TAB: MY CROPS                                               */}
+        {/* TAB: YIELD PREDICTOR                                       */}
         {/* ════════════════════════════════════════════════════════════ */}
-        {activeTab === 'mycrops' && (
-          <div className="space-y-5 fade-up">
-            {/* Add new crop button / form */}
-            <div className="bg-[var(--bg-card)] rounded-3xl shadow-xl border border-[var(--border-card)] p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                  <Sprout size={20} className="text-emerald-500" /> {t('My Crops')}
-                </h2>
-                <button
-                  onClick={() => { setShowAddForm(!showAddForm); setAddError(''); }}
-                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all shadow flex items-center gap-2
-                    ${showAddForm
-                      ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      : 'bg-gradient-to-r from-emerald-600 to-green-700 text-white hover:shadow-lg hover:scale-105'}`}
-                >
-                  {showAddForm ? <><X size={14} /> {t('Cancel')}</> : <><Plus size={14} /> {t('Add Crop')}</>}
-                </button>
-              </div>
-
-              {/* Add crop form */}
-              {showAddForm && (
-                <form onSubmit={handleAddCrop} className="space-y-4 border-t border-gray-100 pt-4 fade-up">
-                  {addError && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-2.5 rounded-xl">⚠️ {addError}</div>
-                  )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">{t('Crop Name')}</label>
-                      <input
-                        type="text" required value={addForm.cropName}
-                        onChange={(e) => setAddForm({ ...addForm, cropName: e.target.value })}
-                        placeholder="e.g., Wheat"
-                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">{t('Variety')}</label>
-                      <input
-                        type="text" required value={addForm.cropVariety}
-                        onChange={(e) => setAddForm({ ...addForm, cropVariety: e.target.value })}
-                        placeholder="e.g., HD-2967"
-                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">{t('Planting Date')}</label>
-                      <input
-                        type="date" required value={addForm.plantingDate}
-                        onChange={(e) => setAddForm({ ...addForm, plantingDate: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
-                      />
-                    </div>
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">{t('Area')}</label>
-                        <input
-                          type="number" step="0.01" required min="0.01" value={addForm.area.value}
-                          onChange={(e) => setAddForm({ ...addForm, area: { ...addForm.area, value: e.target.value } })}
-                          placeholder="e.g., 2.5"
-                          className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">{t('Unit')}</label>
-                        <select
-                          value={addForm.area.unit}
-                          onChange={(e) => setAddForm({ ...addForm, area: { ...addForm.area, unit: e.target.value } })}
-                          className="h-[42px] px-3 rounded-xl border-2 border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-all"
-                        >
-                          <option value="acres">Acres</option>
-                          <option value="hectares">Hectares</option>
-                          <option value="guntha">Guntha</option>
-                          <option value="bigha">Bigha</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="submit"
-                    className="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-700 text-white font-bold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2">
-                    <CheckCircle2 size={18} /> Add Crop to My List
-                  </button>
-                </form>
-              )}
-            </div>
-
-            {/* Crops list */}
-            {loadingCrops ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="rounded-2xl overflow-hidden h-28 shimmer" />
-                ))}
-              </div>
-            ) : myCrops.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-3xl shadow border border-gray-100">
-                <div className="flex justify-center mb-4">
-                  <Sprout size={64} className="text-emerald-100" />
-                </div>
-                <p className="text-gray-600 font-semibold">{t('No crops added yet.')}</p>
-                <p className="text-gray-400 text-sm mt-1">{t('Generate a crop guide above — it saves automatically!')}</p>
-                <button
-                  onClick={() => setActiveTab('guide')}
-                  className="mt-4 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-green-700 text-white text-sm font-bold rounded-xl shadow hover:shadow-lg transition-all flex items-center justify-center gap-2 mx-auto"
-                >
-                  <ClipboardList size={16} /> {t('Go to Crop Guide')} <ChevronRight size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {myCrops.map((crop) => {
-                  const meta = POPULAR_CROPS.find((c) => c.name.toLowerCase() === crop.cropName?.toLowerCase());
-                  return (
-                    <div key={crop._id}
-                      className={`bg-white rounded-2xl border shadow-md p-5 flex gap-4 items-start transition-all hover:shadow-lg ${meta?.border || 'border-green-200'}`}
-                    >
-                      <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${meta?.color || 'from-green-400 to-emerald-600'} flex items-center justify-center text-3xl shadow-md flex-shrink-0`}>
-                        {meta?.emoji || '🌿'}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-gray-900 text-base">{crop.cropName}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          Area: <strong>{crop.area?.value || crop.area} {crop.area?.unit || 'acres'}</strong>
-                        </p>
-                        {crop.cropVariety && crop.cropVariety !== 'AI Guide' && (
-                          <p className="text-xs text-gray-500">Variety: <strong>{crop.cropVariety}</strong></p>
-                        )}
-                        <p className="text-xs text-gray-400">
-                          Added: {new Date(crop.plantingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                        </p>
-                        {crop.cropVariety === 'AI Guide' && (
-                          <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
-                            <Brain size={10} /> AI Guide Saved
-                          </span>
-                        )}
-                        <button
-                          onClick={() => {
-                            setSelectedCrop(crop.cropName);
-                            setArea(String(crop.area?.value || crop.area || ''));
-                            setAreaUnit(crop.area?.unit || 'acres');
-                            setActiveTab('guide');
-                            setGuide(null);
-                            setCustomCrop('');
-                            setSaveToast('');
-                          }}
-                          className="mt-2.5 w-full flex items-center justify-center gap-2 py-2 px-3
-                            bg-gradient-to-r from-emerald-600 to-green-700 text-white text-xs font-bold
-                            rounded-xl hover:from-emerald-500 hover:to-green-600 shadow
-                            hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-150"
-                        >
-                          <ClipboardList size={14} /> {t('See Crop Guide')} <ChevronRight size={14} />
-                        </button>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteCrop(crop._id)}
-                        disabled={deletingId === crop._id}
-                        className="text-gray-300 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition-all flex-shrink-0"
-                      >
-                        {deletingId === crop._id ? (
-                          <RotateCcw size={16} className="spin-slow" />
-                        ) : (
-                          <Trash2 size={16} />
-                        )}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+        {activeTab === 'yield' && (
+          <div className="fade-up">
+            <CropYieldPredictor />
           </div>
         )}
       </div>

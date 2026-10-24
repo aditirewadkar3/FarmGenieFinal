@@ -15,7 +15,9 @@ import json
 import uvicorn
 import threading
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Body
+from pydantic import BaseModel
+from typing import Optional, Dict, Any
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from dotenv import load_dotenv
@@ -186,6 +188,52 @@ async def search_facilities(
         return {"success": False, "data": [], "error": str(e)}
 
 # ── Entry Point ───────────────────────────────────────────────────────────────
+
+# ── Yield Prediction Models & Schemas ──────────────────────────────────────────
+class YieldPredictionRequest(BaseModel):
+    crop: str
+    state: Optional[str] = "Maharashtra"
+    season: Optional[str] = "Kharif"
+    area: Optional[float] = 1.0
+    areaUnit: Optional[str] = "acres"
+    annualRainfall: Optional[float] = None
+    soilType: Optional[str] = "alluvial"
+    irrigation: Optional[str] = "irrigated"
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    weatherContext: Optional[Dict[str, Any]] = None
+
+@app.get("/yield-metadata")
+def get_yield_metadata():
+    try:
+        from yield_predictor import predictor
+        return {"success": True, "metadata": predictor.get_metadata()}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+@app.post("/predict-yield")
+def predict_crop_yield(req: YieldPredictionRequest):
+    try:
+        from yield_predictor import predictor
+        if not predictor.is_ready():
+            raise HTTPException(status_code=503, detail="Crop yield model is uninitialized. Train or load model first.")
+        result = predictor.predict(
+            crop=req.crop,
+            state=req.state or "Maharashtra",
+            season=req.season or "Kharif",
+            area_val=req.area or 1.0,
+            area_unit=req.areaUnit or "acres",
+            annual_rainfall=req.annualRainfall,
+            soil_type=req.soilType or "alluvial",
+            irrigation=req.irrigation or "irrigated",
+            weather_context=req.weatherContext
+        )
+        return {"success": True, "data": result}
+    except Exception as e:
+        print(f"[-] Yield prediction error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)

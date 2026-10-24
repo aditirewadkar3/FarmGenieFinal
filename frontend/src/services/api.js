@@ -116,10 +116,9 @@ export const userAPI = {
 
 // Crop APIs
 export const cropAPI = {
-  getCrops: () => api.get('/crops'),
-  addCrop: (data) => api.post('/crops', data),
-  deleteCrop: (id) => api.delete(`/crops/${id}`),
-  getCropsByFarmer: (farmerId) => api.get(`/crops/farmer/${farmerId}`),
+  predictYield: (data) => api.post('/crops/predict-yield', data),
+  getYieldMetadata: () => api.get('/crops/yield-metadata'),
+  getOpenMeteoWeather: (lat, lon) => api.get(`/crops/weather-data?lat=${lat}&lon=${lon}`),
 };
 
 // Disease Report APIs

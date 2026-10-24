@@ -1,3 +1,4 @@
+const POPULAR_WEATHER_CROPS = ['Wheat', 'Rice', 'Cotton', 'Soybean', 'Sugarcane', 'Maize', 'Tomato', 'Onion', 'Potato', 'Chilli', 'Groundnut', 'Banana'];
 import { useState, useEffect, useRef } from 'react';
 import {
   Sun,
@@ -33,7 +34,7 @@ import {
   Circle,
   Beaker
 } from 'lucide-react';
-import { weatherAPI, userAPI, geminiAPI, cropAPI } from '../../services/api';
+import { weatherAPI, userAPI, geminiAPI } from '../../services/api';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import AIKeyModal from '../../components/AIKeyModal';
@@ -118,19 +119,11 @@ const Weather = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  /* ── my crops (from crop management DB) ── */
-  const [myCrops, setMyCrops] = useState([]);
-  const [cropsLoading, setCropsLoading] = useState(true);
-  const [selectedCropId, setSelectedCropId] = useState(null); // selected _id or 'new'
-
-  /* ── add-new-crop inline form ── */
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newCropName, setNewCropName] = useState('');
-  const [newCropArea, setNewCropArea] = useState('');
-  const [newCropUnit, setNewCropUnit] = useState('acres');
-  const [addingCrop, setAddingCrop] = useState(false);
-  const [addCropError, setAddCropError] = useState('');
-  const [addCropToast, setAddCropToast] = useState('');
+  /* ── Crop selection for weather analysis ── */
+  const [selectedCropName, setSelectedCropName] = useState('Wheat');
+  const [customCropName, setCustomCropName] = useState('');
+  const [cropArea, setCropArea] = useState('2.5');
+  const [cropAreaUnit, setCropAreaUnit] = useState('acres');
 
   /* ── impact analysis ── */
   const [impactLoading, setImpactLoading] = useState(false);
@@ -145,7 +138,6 @@ const Weather = () => {
   useEffect(() => {
     fetchUserLocation();
     fetchWeather();
-    fetchMyCrops();
   }, []);
 
   const fetchUserLocation = async () => {
@@ -171,17 +163,6 @@ const Weather = () => {
     }
   };
 
-  const fetchMyCrops = async () => {
-    try {
-      setCropsLoading(true);
-      const r = await cropAPI.getCrops();
-      setMyCrops(r.data || []);
-    } catch {
-      setMyCrops([]);
-    } finally {
-      setCropsLoading(false);
-    }
-  };
 
   /* ── derived weather values ── */
   const currentWeather = weather?.current ? {
@@ -208,36 +189,10 @@ const Weather = () => {
   const currentWeatherInfo = currentWeather ? getWeatherDescription(currentWeather.weatherCode) : null;
 
   /* ── selected crop object ── */
-  const selectedCrop = myCrops.find(c => c._id === selectedCropId) || null;
-
-  /* ── add new crop inline ── */
-  const handleAddNewCrop = async () => {
-    if (!newCropName.trim()) { setAddCropError('Please enter a crop name.'); return; }
-    if (!newCropArea || parseFloat(newCropArea) <= 0) { setAddCropError('Please enter a valid area.'); return; }
-    setAddingCrop(true);
-    setAddCropError('');
-    try {
-      const res = await cropAPI.addCrop({
-        cropName: newCropName.trim(),
-        cropVariety: 'Weather Analysis',
-        plantingDate: new Date().toISOString().split('T')[0],
-        area: { value: parseFloat(newCropArea), unit: newCropUnit },
-      });
-      // extract _id before refreshing (backend returns { message, crop })
-      const newId = res.data?.crop?._id || res.data?._id;
-      await fetchMyCrops();
-      // auto-select after list is refreshed
-      if (newId) setSelectedCropId(newId);
-      setAddCropToast(`✅ "${newCropName.trim()}" added to Crop Management!`);
-      setTimeout(() => setAddCropToast(''), 4000);
-      setShowAddForm(false);
-      setNewCropName(''); setNewCropArea(''); setNewCropUnit('acres');
-    } catch (err) {
-      setAddCropError(err.response?.data?.message || 'Failed to add crop. Try again.');
-    } finally {
-      setAddingCrop(false);
-    }
-  };
+  const activeCropName = customCropName.trim() || selectedCropName;
+  const selectedCrop = activeCropName
+    ? { cropName: activeCropName, area: { value: parseFloat(cropArea) || 1, unit: cropAreaUnit } }
+    : null;
 
   /* ── run impact analysis ── */
   const handleAnalyzeImpact = async () => {
@@ -524,207 +479,99 @@ const Weather = () => {
             )}
 
             {/* ════════════════════════════════════════════════════════════════ */}
-            {/* CROP SELECTOR — MY CROPS FROM CROP MANAGEMENT                  */}
+            {/* CROP SELECTOR FOR WEATHER ANALYSIS                            */}
             {/* ════════════════════════════════════════════════════════════════ */}
             <div className="glass fade-up" style={{ padding: '28px', marginBottom: 22 }}>
 
               {/* Header row */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 22 }}>
-                <div>
-                  <h2 style={{ fontSize: 19, fontWeight: 900, color: 'black', margin: '0 0 5px', display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Sprout size={20} className="text-emerald-400" /> {t('Weather Impact on Your Crop')}
-                  </h2>
-                  <p style={{ color: isDark ? '#94a3b8' : '#475569', fontSize: 13, margin: 0 }}>
-                    {t('Choose a crop from your farm to analyse how today\'s weather affects it')}
-                  </p>
-                </div>
-
-                {/* Add new crop button */}
-                <button
-                  onClick={() => { setShowAddForm(v => !v); setAddCropError(''); }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 7,
-                    background: showAddForm ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg,#10b981,#059669)',
-                    border: 'none', borderRadius: 12, padding: '10px 18px', cursor: 'pointer', color: 'white', fontWeight: 700, fontSize: 13, transition: 'all .2s',
-                    boxShadow: showAddForm ? 'none' : '0 4px 16px rgba(16,185,129,.3)',
-                  }}>
-                  {showAddForm ? <><X size={14} /> {t('Cancel')}</> : <><Plus size={14} /> {t('Add New Crop')}</>}
-                </button>
+              <div style={{ marginBottom: 20 }}>
+                <h2 style={{ fontSize: 19, fontWeight: 900, color: 'var(--text-primary)', margin: '0 0 5px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <Sprout size={20} className="text-emerald-400" /> {t('Weather Impact on Your Crop')}
+                </h2>
+                <p style={{ color: isDark ? '#94a3b8' : '#475569', fontSize: 13, margin: 0 }}>
+                  {t("Choose a crop to analyse how today's weather affects it")}
+                </p>
               </div>
 
-              {/* ── Add new crop inline form ── */}
-              {showAddForm && (
-                <div className="fade-up" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 18, padding: '20px', marginBottom: 20 }}>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: '#6ee7b7', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Plus size={18} /> Add Crop for Weather Analysis
-                  </p>
-                  {addCropError && (
-                    <div style={{ background: 'rgba(239,68,68,.09)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 10, padding: '8px 12px', color: '#fca5a5', fontSize: 12, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <AlertCircle size={14} /> {addCropError}
-                    </div>
-                  )}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 10, alignItems: 'end' }}>
-                    <div>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: isDark ? '#64748b' : '#475569', textTransform: 'uppercase', letterSpacing: .5, display: 'block', marginBottom: 6 }}>{t('Crop Name')}</label>
+              {/* Popular Crop Chips */}
+              <p style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#475569', fontWeight: 600, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: .5 }}>
+                {t('Select Crop')}
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(110px,1fr))', gap: 10, marginBottom: 16 }}>
+                {POPULAR_WEATHER_CROPS.map(c => {
+                  const isSelected = selectedCropName.toLowerCase() === c.toLowerCase() && !customCropName.trim();
+                  return (
+                    <button
+                      key={c}
+                      onClick={() => { setSelectedCropName(c); setCustomCropName(''); setImpact(null); }}
+                      className={`crop-card ${isSelected ? 'selected' : ''}`}
+                      style={{ padding: '12px 8px' }}>
+                      {isSelected && <div className="check-badge"><Check size={10} strokeWidth={4} /></div>}
+                      <span style={{ fontSize: 26 }}>{getCropEmoji(c)}</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? '#10b981' : (isDark ? '#e2e8f0' : '#1e293b'), textAlign: 'center' }}>
+                        {c}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
-                      <input
-                        className={`wr-input ${isDark ? '' : 'bg-white text-gray-900 border-gray-200'}`}
-                        type="text"
-                        value={newCropName}
-                        onChange={e => setNewCropName(e.target.value)}
-                        placeholder="e.g. Wheat, Rice, Tomato…"
-                        style={{
-                          color: '#000000',
-                          WebkitTextFillColor: '#000000',
-                          opacity: 1,
-                          ...(isDark
-                            ? {}
-                            : {
-                              background: 'white',
-                              borderColor: '#e2e8f0',
-                            }),
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: '#0f0f10ff', textTransform: 'uppercase', letterSpacing: .5, display: 'block', marginBottom: 6 }}>{t('Area')}</label>
-
-                      <input
-                        className="wr-input"
-                        type="number"
-                        min="0.1"
-                        step="0.1"
-                        value={newCropArea}
-                        onChange={e => setNewCropArea(e.target.value)}
-                        placeholder="2.5"
-                        style={{
-                          width: 90,
-                          color: '#000000',
-                          WebkitTextFillColor: '#000000',
-                          opacity: 1,
-                          ...(isDark ? {} : {
-                            background: '#ffffff',
-                            borderColor: '#e2e8f0',
-                          }),
-                        }}
-                      />
-                    </div>
-                    <div>
-
-                      <label
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 700,
-                          color: '#64748b',
-                          textTransform: 'uppercase',
-                          letterSpacing: 0.5,
-                          display: 'block',
-                          marginBottom: 6,
-                        }}
-                      >
-                        {t('Unit')}
-                      </label>
-
-                      <select
-                        className="wr-select"
-                        value={newCropUnit}
-                        onChange={e => setNewCropUnit(e.target.value)}
-                        style={{
-                          color: '#000000',
-                          WebkitTextFillColor: '#000000',
-                          backgroundColor: '#6ee7b7',
-                          borderColor: '#e2e8f0',
-                          opacity: 1,
-                        }}
-                      >
-                        {AREA_UNITS.map(u => (
-                          <option key={u} value={u}>
-                            {u.charAt(0).toUpperCase() + u.slice(1)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleAddNewCrop}
-                    disabled={addingCrop}
+              {/* Custom Crop Name & Area Inputs */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 12, alignItems: 'end', marginBottom: 20, background: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc', padding: 16, borderRadius: 16, border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid #e2e8f0' }}>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: isDark ? '#94a3b8' : '#475569', textTransform: 'uppercase', letterSpacing: .5, display: 'block', marginBottom: 6 }}>
+                    {t('Or Type Crop Name')}
+                  </label>
+                  <input
+                    type="text"
+                    value={customCropName}
+                    onChange={e => { setCustomCropName(e.target.value); setImpact(null); }}
+                    placeholder="e.g. Mustard, Ginger…"
                     style={{
-                      marginTop: 14, width: '100%', padding: '12px', borderRadius: 13, border: 'none',
-                      background: addingCrop ? 'rgba(255,255,255,0.07)' : 'linear-gradient(135deg,#10b981,#059669)',
-                      color: addingCrop ? '#475569' : '#05070aff', fontWeight: 800, fontSize: 14,
-                      cursor: addingCrop ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                      boxShadow: addingCrop ? 'none' : '0 6px 20px rgba(16,185,129,.3)', transition: 'all .2s',
+                      width: '100%', padding: '10px 14px', borderRadius: 12,
+                      background: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
+                      border: isDark ? '1px solid rgba(255,255,255,0.15)' : '1px solid #cbd5e1',
+                      color: isDark ? '#f8fafc' : '#0f172a', fontSize: 13, outline: 'none'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: isDark ? '#94a3b8' : '#475569', textTransform: 'uppercase', letterSpacing: .5, display: 'block', marginBottom: 6 }}>
+                    {t('Area')}
+                  </label>
+                  <input
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    value={cropArea}
+                    onChange={e => { setCropArea(e.target.value); setImpact(null); }}
+                    style={{
+                      width: 90, padding: '10px 14px', borderRadius: 12,
+                      background: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff',
+                      border: isDark ? '1px solid rgba(255,255,255,0.15)' : '1px solid #cbd5e1',
+                      color: isDark ? '#f8fafc' : '#0f172a', fontSize: 13, outline: 'none'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: isDark ? '#94a3b8' : '#475569', textTransform: 'uppercase', letterSpacing: .5, display: 'block', marginBottom: 6 }}>
+                    {t('Unit')}
+                  </label>
+                  <select
+                    value={cropAreaUnit}
+                    onChange={e => { setCropAreaUnit(e.target.value); setImpact(null); }}
+                    style={{
+                      padding: '10px 14px', borderRadius: 12,
+                      background: isDark ? '#1e293b' : '#ffffff',
+                      border: isDark ? '1px solid rgba(255,255,255,0.15)' : '1px solid #cbd5e1',
+                      color: isDark ? '#f8fafc' : '#0f172a', fontSize: 13, outline: 'none'
                     }}>
-                    {addingCrop ? (
-                      <><RotateCcw size={16} className="spin-anim" /> Adding…</>
-                    ) : (
-                      <><Check size={16} /> {t('Add Crop & Save to Crop Management')}</>
-                    )}
-                  </button>
-                  <p style={{ fontSize: 11, color: '#475569', margin: '10px 0 0', textAlign: 'center' }}>
-                    {t('This crop will also appear in your')} <strong style={{ color: '#6ee7b7' }}>{t('Crop Management')}</strong> {t('section')}
-                  </p>
+                    {AREA_UNITS.map(u => (
+                      <option key={u} value={u}>{u.charAt(0).toUpperCase() + u.slice(1)}</option>
+                    ))}
+                  </select>
                 </div>
-              )}
-
-              {/* ── Add crop toast ── */}
-              {addCropToast && (
-                <div style={{ background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.8)', border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid #e2e8f0', borderRadius: 24, textAlign: 'center', padding: '48px 24px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-                    <Sprout size={48} className={isDark ? "text-emerald-500/20" : "text-emerald-500/40"} />
-                  </div>
-                  <p style={{ color: isDark ? '#94a3b8' : '#64748b', fontWeight: 700, margin: 0 }}>{t('No crops added yet')}</p>
-                  <p style={{ color: isDark ? '#475569' : '#94a3b8', fontSize: 13, marginTop: 6 }}>{t('Add crops in')} <strong style={{ color: '#6ee7b7' }}>{t('Crop Management')}</strong> {t('to see live market prices here.')}</p>
-                </div>
-              )}
-
-              {/* ── My Crops Cards ── */}
-              {cropsLoading ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: 12 }}>
-                  {[1, 2, 3, 4].map(i => <div key={i} className="shimmer-box" style={{ height: 100, borderRadius: 16 }} />)}
-                </div>
-              ) : myCrops.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: 18 }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-                    <LayoutGrid size={48} className="text-slate-700" />
-                  </div>
-                  <p style={{ color: '#64748b', fontSize: 14, fontWeight: 600, margin: '0 0 4px' }}>{t('No crops in your farm yet')}</p>
-                  <p style={{ color: '#334155', fontSize: 12, margin: '0 0 14px' }}>{t('Add your first crop above to analyse weather impact')}</p>
-                  <button
-                    onClick={() => setShowAddForm(true)}
-                    style={{ background: 'linear-gradient(135deg,#10b981,#059669)', border: 'none', borderRadius: 12, padding: '10px 22px', color: 'white', fontWeight: 700, fontSize: 13, cursor: 'pointer', boxShadow: '0 4px 16px rgba(16,185,129,.28)', display: 'inline-flex', alignItems: 'center', gap: 7 }}>
-                    <Plus size={14} /> {t('Add Your First Crop')}
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <p style={{ fontSize: 12, color: '#475569', fontWeight: 600, margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: .5 }}>
-                    {t('Your Crops')} ({myCrops.length}) — {t('tap to select for analysis')}
-                  </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: 12, marginBottom: 20 }}>
-                    {myCrops.map(crop => {
-                      const isSelected = selectedCropId === crop._id;
-                      const emoji = getCropEmoji(crop.cropName);
-                      return (
-                        <button
-                          key={crop._id}
-                          onClick={() => { setSelectedCropId(crop._id); setImpact(null); }}
-                          className={`crop-card ${isSelected ? 'selected' : ''}`}>
-                          {isSelected && <div className="check-badge"><Check size={10} strokeWidth={4} /></div>}
-                          <span style={{ fontSize: 32 }}>{emoji}</span>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: isSelected ? '#10b981' : (isDark ? '#e2e8f0' : '#1e293b'), textAlign: 'center', lineHeight: 1.2 }}>{crop.cropName}</span>
-                          <span style={{ fontSize: 10, color: isDark ? '#94a3b8' : '#475569', fontWeight: 500 }}>
-                            {crop.area?.value || crop.area} {crop.area?.unit || 'acres'}
-                          </span>
-                          {crop.cropVariety && crop.cropVariety !== 'AI Guide' && crop.cropVariety !== 'Weather Analysis' && (
-                            <span style={{ fontSize: 9, color: '#334155', background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '2px 6px' }}>{crop.cropVariety}</span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+              </div>
 
               {/* ── Show selected crop summary ── */}
               {selectedCrop && (

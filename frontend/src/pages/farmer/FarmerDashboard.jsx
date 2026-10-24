@@ -25,7 +25,7 @@ import {
   Zap,
   Sparkles
 } from 'lucide-react';
-import { agronomistAPI, weatherAPI, cropAPI, marketAPI } from '../../services/api';
+import { agronomistAPI, weatherAPI, marketAPI } from '../../services/api';
 import socket from '../../services/socket';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -119,7 +119,6 @@ const FarmerDashboard = () => {
   const [tipFading, setTipFading] = useState(false);
   const [showMap, setShowMap] = useState(true);
   const [heroVisible, setHeroVisible] = useState(false);
-  const [myCrops, setMyCrops] = useState([]);
   const [weatherRisk, setWeatherRisk] = useState(34);
   const [diseaseRisk, setDiseaseRisk] = useState(22);
   const [marketTrend, setMarketTrend] = useState(71);
@@ -177,11 +176,6 @@ const FarmerDashboard = () => {
     }
   }, [user]);
 
-  // Fetch crops for hero section
-  useEffect(() => {
-    cropAPI.getCrops().then(r => setMyCrops(r.data || [])).catch(() => { });
-  }, []);
-
   // ── Helpers ────────────────────────────────────────────────────────────
   const getInitials = (name = '') =>
     name.split(' ').map(p => p[0]).filter(Boolean).join('').slice(0, 2).toUpperCase();
@@ -190,10 +184,9 @@ const FarmerDashboard = () => {
   const greeting = hour < 12 ? t('Good Morning') : hour < 17 ? t('Good Afternoon') : t('Good Evening');
   const GreetIcon = hour < 12 ? Sun : hour < 17 ? CloudSun : Moon;
 
-  const currentCrop = myCrops[0]?.name || null;
 
   const quickActionCards = [
-    { to: '/farmer/crops', icon: Sprout, title: t('My Crops'), desc: t('Manage & track your crops'), gradient: 'from-emerald-500 to-green-600', bg: 'bg-emerald-50', halo: '#22c55e' },
+    { to: '/farmer/crops', icon: Sprout, title: t('Crop Guide'), desc: t('AI guidance & yield prediction'), gradient: 'from-emerald-500 to-green-600', bg: 'bg-emerald-50', halo: '#22c55e' },
     { to: '/farmer/disease-reports', icon: ScanSearch, title: t('AI Disease Detection'), desc: t('Detect crop diseases with AI'), gradient: 'from-orange-500 to-red-500', bg: 'bg-orange-50', halo: '#f97316' },
     { to: '/farmer/weather', icon: CloudSun, title: t('Weather Forecast'), desc: t('7-day forecast for your farm'), gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-50', halo: '#3b82f6' },
     { to: '/profile', icon: UserIcon, title: t('My Profile'), desc: t('Update location & settings'), gradient: 'from-rose-500 to-pink-500', bg: 'bg-rose-50', halo: '#f43f5e' },
@@ -272,11 +265,6 @@ const FarmerDashboard = () => {
                   {user?.address?.district && (
                     <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur text-emerald-200 px-3 py-1.5 rounded-xl text-sm font-medium border border-white/10">
                       <MapPin size={16} /> {user.address.district}
-                    </span>
-                  )}
-                  {currentCrop && (
-                    <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur text-emerald-200 px-3 py-1.5 rounded-xl text-sm font-medium border border-white/10">
-                      <Sprout size={16} /> {currentCrop}
                     </span>
                   )}
                   <span className="inline-flex items-center gap-2 bg-emerald-400/20 text-emerald-200 px-3 py-1.5 rounded-xl text-xs font-semibold border border-emerald-400/30">

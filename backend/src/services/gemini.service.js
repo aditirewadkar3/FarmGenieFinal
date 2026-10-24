@@ -186,7 +186,7 @@ The app supports three languages: English, Hindi (हिंदी), and Marathi 
 
 ### 🌾 Farmer Dashboard (/farmer)
 - Overview of all farmer features
-- Quick cards linking to: My Crops, Disease Detection, Weather, Advisories
+- Quick cards linking to: Crop Guide, Disease Detection, Weather, Advisories
 - Shows list of verified agronomists available in the farmer's district
 - Location-based personalization — farmer sets their location on a map
 
@@ -203,9 +203,9 @@ The app supports three languages: English, Hindi (हिंदी), and Marathi 
 - Results are saved as disease reports. Past reports can be viewed and deleted.
 - An AI confidence < 50% or exactly 100% means the image was unprocessable
 
-### 🌱 My Crops (/farmer/crops)
-- Farmer can add, view, and delete their crops
-- Keeps track of what crops they are growing
+### 🌱 Crop Guide & Yield Prediction (/farmer/crops)
+- AI-powered management guide for popular crops and land sizes
+- Predict crop yield based on farmer location, weather, and agricultural inputs
 
 ### 🌤️ Weather Page (/farmer/weather)
 - Shows current weather conditions for the farmer's farm location

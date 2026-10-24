@@ -46,7 +46,7 @@ const Navbar = () => {
   const getPageTitle = () => {
     const path = location.pathname;
     if (path === '/') return 'Home';
-    if (path.includes('/farmer/crops')) return 'My Crops';
+    if (path.includes('/farmer/crops')) return 'Crop Guide';
     if (path.includes('/farmer/disease-reports')) return 'Disease Reports';
     if (path.includes('/farmer/weather')) return 'Weather Updates';
     if (path.includes('/farmer/market')) return 'Market Trends';

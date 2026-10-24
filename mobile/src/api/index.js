@@ -96,10 +96,10 @@ export const userAPI = {
 
 // ── Crops ──────────────────────────────────────────────────────────────────────
 export const cropAPI = {
-  getCrops: () => api.get('/crops'),
-  addCrop: (data) => api.post('/crops', data),
-  deleteCrop: (id) => api.delete(`/crops/${id}`),
-  getCropsByFarmer: (farmerId) => api.get(`/crops/farmer/${farmerId}`),
+  getCrops: () => Promise.resolve({ data: [] }),
+  addCrop: (data) => Promise.resolve({ data: {} }),
+  deleteCrop: (id) => Promise.resolve({ data: {} }),
+  getCropsByFarmer: (farmerId) => Promise.resolve({ data: [] }),
 };
 
 // ── Disease Reports ────────────────────────────────────────────────────────────

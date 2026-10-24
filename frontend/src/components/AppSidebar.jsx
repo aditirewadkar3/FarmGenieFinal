@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Home, Sprout, ClipboardList, CloudSun, BarChart3, Users, Microscope,
+    Home, Sprout, TrendingUp, ClipboardList, CloudSun, BarChart3, Users, Microscope,
     UserCircle, LogOut, Truck, ChevronRight, ChevronLeft, Menu,
     Sun, Moon, Globe, MessageSquare, Settings, ShieldCheck, X, Store
 } from 'lucide-react';
@@ -21,7 +21,8 @@ import { cn } from '../lib/utils';
 const NAV_CONFIG = {
     farmer: [
         { path: '/farmer', label: 'Dashboard', icon: Home },
-        { path: '/farmer/crops', label: 'My Crops', icon: Sprout },
+        { path: '/farmer/crops', label: 'Crop Guide', icon: Sprout },
+        { path: '/farmer/yield-prediction', label: 'Yield Predictor', icon: TrendingUp },
         { path: '/farmer/disease-reports', label: 'Disease Reports', icon: ClipboardList },
         { path: '/farmer/weather', label: 'Weather Updates', icon: CloudSun },
         { path: '/farmer/schemes', label: 'Govt Schemes', icon: ClipboardList },

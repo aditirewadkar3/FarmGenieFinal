@@ -22,7 +22,7 @@ import {
     AlertTriangle,
     Brain
 } from 'lucide-react';
-import { cropAPI, geminiAPI, userAPI } from '../../services/api';
+import { geminiAPI, userAPI } from '../../services/api';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import AIKeyModal from '../../components/AIKeyModal';
@@ -531,20 +531,14 @@ const PriceIntelPanel = ({ commodity, district, state, onClose }) => {
 // MAIN MARKET PAGE
 // ══════════════════════════════════════════════════════════════════════════════
 const Market = () => {
-    const [myCrops, setMyCrops] = useState([]);
-    const [loadingCrops, setLoadingCrops] = useState(true);
     const [userProfile, setUserProfile] = useState(null);
     const [activePanel, setActivePanel] = useState(null);
     const [searchInput, setSearchInput] = useState('');
     const { isDark } = useTheme();
     const { t } = useLanguage();
 
-    useEffect(() => { Promise.all([loadCrops(), loadProfile()]); }, []);
+    useEffect(() => { loadProfile(); }, []);
 
-    const loadCrops = async () => {
-        try { setLoadingCrops(true); const r = await cropAPI.getCrops(); setMyCrops(r.data || []); }
-        catch { setMyCrops([]); } finally { setLoadingCrops(false); }
-    };
     const loadProfile = async () => {
         try { const r = await userAPI.getProfile(); setUserProfile(r.data?.user || r.data); }
         catch { /* silent */ }
@@ -607,69 +601,6 @@ const Market = () => {
                             </div>
                         )}
                     </div>
-                </div>
-
-                {/* ── My Crops ─────────────────────────────────────────────── */}
-                <section className="fade-up">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                        <h2 style={{ color: isDark ? '#f1f5f9' : '#1e293b', fontSize: 17, fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Sprout size={18} className="text-emerald-400" /> {t('My Crops')} — {t('Tap to See Prices')}
-                        </h2>
-                        {!loadingCrops && myCrops.length > 0 && (
-                            <span style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)', color: '#a5b4fc', borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>
-                                {myCrops.length} crops
-                            </span>
-                        )}
-                    </div>
-
-                    {loadingCrops ? (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(110px,1fr))', gap: 10 }}>
-                            {[1, 2, 3, 4].map(i => <Sk key={i} h={90} />)}
-                        </div>
-                    ) : myCrops.length === 0 ? (
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: 24, textAlign: 'center', padding: '48px 24px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-                                <Sprout size={48} className={isDark ? "text-emerald-500/20" : "text-emerald-500/40"} />
-                            </div>
-                            <p style={{ color: isDark ? '#94a3b8' : '#64748b', fontWeight: 700, margin: 0 }}>{t('No crops added yet')}</p>
-                            <p style={{ color: isDark ? '#475569' : '#94a3b8', fontSize: 13, marginTop: 6 }}>{t('Add crops in')} <strong style={{ color: isDark ? '#a5b4fc' : '#4f46e5' }}>{t('Crop Management')}</strong> {t('to see live market prices here.')}</p>
-                        </div>
-                    ) : (
-                        <>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(110px,1fr))', gap: 10 }}>
-                                {myCrops.map((crop, i) => {
-                                    const isActive = activePanel?.commodity?.toLowerCase() === crop.cropName?.toLowerCase() && activePanel?.source === 'mycrop';
-                                    const [c1, c2] = CROP_GRAD[i % CROP_GRAD.length];
-                                    return (
-                                        <button key={crop._id} className="crop-btn"
-                                            onClick={() => openPanel(crop.cropName, 'mycrop')}
-                                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: '16px 8px', borderRadius: 20, border: `2px solid ${isActive ? c1 : isDark ? 'rgba(255,255,255,0.08)' : '#e2e8f0'}`, background: isActive ? `linear-gradient(135deg,${c1}22,${c2}11)` : isDark ? 'rgba(255,255,255,0.04)' : 'white', cursor: 'pointer', transition: 'all 0.25s', textAlign: 'center', boxShadow: isDark ? 'none' : '0 4px 6px rgba(0,0,0,0.02)' }}>
-                                            <div style={{ width: 50, height: 50, borderRadius: 16, background: `linear-gradient(135deg,${c1},${c2})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, boxShadow: isActive ? `0 0 16px ${c1}66` : 'none', transition: 'box-shadow 0.3s' }}>
-                                                {getCropEmoji(crop.cropName)}
-                                            </div>
-                                            <span style={{ color: isDark ? '#f1f5f9' : '#1e293b', fontSize: 11, fontWeight: 700, lineHeight: 1.3 }}>{crop.cropName}</span>
-                                            {crop.area?.value && <span style={{ color: isDark ? '#475569' : '#94a3b8', fontSize: 9 }}>{crop.area.value} {crop.area.unit}</span>}
-                                            <span style={{ color: isActive ? c1 : isDark ? '#475569' : '#94a3b8', fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 4, justifyContent: 'center' }}>
-                                                {isActive ? <><TrendingUp size={10} /> {t('Showing')}</> : <><TrendingDown size={10} /> {t('Price')}</>}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                            {activePanel?.source === 'mycrop' && (
-                                <div style={{ marginTop: 16 }}>
-                                    <PriceIntelPanel commodity={activePanel.commodity} district={district} state={state} onClose={() => setActivePanel(null)} />
-                                </div>
-                            )}
-                        </>
-                    )}
-                </section>
-
-                {/* ── Divider ───────────────────────────────────────────────── */}
-                <div className="fade-up" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg,transparent,rgba(99,102,241,0.3),transparent)' }} />
-                    <span style={{ color: '#334155', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', whiteSpace: 'nowrap' }}>{t('Search Any Commodity')}</span>
-                    <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg,transparent,rgba(99,102,241,0.3),transparent)' }} />
                 </div>
 
                 {/* ── Commodity Search ──────────────────────────────────────── */}

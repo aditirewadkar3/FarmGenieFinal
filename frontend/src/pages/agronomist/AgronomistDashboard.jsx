@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { agronomistAPI, cropAPI, expertChatAPI } from '../../services/api';
+import { agronomistAPI, expertChatAPI } from '../../services/api';
 import socket from '../../services/socket';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -80,8 +80,7 @@ const AgronomistDashboard = () => {
       setLoadingCrops(true);
       setViewingCrops(farmer.id);
       setViewingFarmerName(farmer.fullName);
-      const response = await cropAPI.getCropsByFarmer(farmer.id);
-      setCrops(response.data);
+      setCrops([]);
     } catch (err) {
       setFarmerError(err.response?.data?.message || 'Failed to fetch crops');
       setViewingCrops(null);
